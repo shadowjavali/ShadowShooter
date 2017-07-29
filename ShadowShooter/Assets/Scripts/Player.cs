@@ -5,16 +5,18 @@ using UnityEngine;
 
 public class Player : LevelObject
 {
+    public Transform shootStartTransform;
+
     [Header("PlayerAttributes")]
     public float maxHealth = 10;
     public float moveSpeed = 0.75f;
     public float rateOfFire = 1;
 
+    
     private float _shootCountdownTimer;
 
     void Update()
-    {
-    
+    {    
         HandleInputs();
     }
 
@@ -60,6 +62,13 @@ public class Player : LevelObject
         if (Input.GetMouseButton(0) && __canShoot)
         {
             _shootCountdownTimer = rateOfFire;
+            Shoot();
         }
+    }
+
+    void Shoot()
+    {
+        
+        //pool manager de merda spawna a bullet
     }
 }
