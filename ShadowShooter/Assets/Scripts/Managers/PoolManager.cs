@@ -35,11 +35,15 @@ public class PoolManager : SystemManager
 
     private SpawningAreaManager[] _gameAreaArray;
 
+    public Func<AssetType, Vector2, Transform, GameObject> J_Spawn;
+
     #region Initialization
 
     public override void J_Start()
     {
         base.J_Start();
+
+        FillActions();
         SetDictionary();
         InitializeAllAreas();
     }
@@ -47,7 +51,20 @@ public class PoolManager : SystemManager
     private void InitializeAllAreas()
     {
         _gameAreaArray = GetComponentsInChildren<SpawningAreaManager>();
+        for (int i=0; i< _gameAreaArray.Length; i++)
+        {
+            _gameAreaArray[i].onSpawn = J_Spawn;
+            _gameAreaArray[i].J_Start();
+        }
+    }
 
+    private void FillActions()
+    {
+        J_Spawn += Spawn;
+    }
+    private void ClearActions()
+    {
+        J_Spawn -= Spawn;
     }
 
     private void SetDictionary()
@@ -62,7 +79,7 @@ public class PoolManager : SystemManager
 
 #endregion
 
-    public GameObject Spawn(AssetType p_type, Vector2 p_position, Transform p_parent)
+    private GameObject Spawn(AssetType p_type, Vector2 p_position, Transform p_parent)
     {
         GameObject __objectToRespawn = null;
 
@@ -85,7 +102,6 @@ public class PoolManager : SystemManager
         {
             return __objectToRespawn;
         }     
-
     }
 
 	

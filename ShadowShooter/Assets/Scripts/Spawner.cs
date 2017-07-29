@@ -5,8 +5,14 @@ using System;
 
 public class Spawner : MonoBehaviour
 {
-    private PoolManager.GameArea _area;
+    private List<LevelObject> _levelObjects =  new List<LevelObject>();
+
     [SerializeField] private PoolManager.AssetType _type;
-    public Action<PoolManager.AssetType, Vector2> onSpawn;
+    public Func<PoolManager.AssetType, Vector2, GameObject> onSpawn;
+
+    public void Spawn()
+    {
+        _levelObjects.Add(onSpawn(_type, transform.position).GetComponent<LevelObject>());
+    }
 
 }
