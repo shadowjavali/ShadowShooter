@@ -31,10 +31,15 @@ public class PoolManager : SystemManager
 
     [SerializeField] private Asset[] assetArray;
 
-    private Dictionary<AssetType, GameObject> assetDict;
+    [SerializeField]
+    private Transform _bufferPool;
+
+   private Dictionary<AssetType, GameObject> assetDict;
     private Dictionary<AssetType, List<GameObject>> _levelObjectPool = new Dictionary<AssetType, List<GameObject>>() ;
 
     private SpawningAreaManager[] _gameAreaArray;
+
+    private List<LevelObject> _childObjects = new List<LevelObject>();
 
     public Func<AssetType, Vector2, Transform, GameObject> JFunc_Spawn;
 
@@ -99,6 +104,17 @@ public class PoolManager : SystemManager
             return false;
 
     }
+    private GameObject Spawn(AssetType p_type, Vector2 p_position)
+    {
+        GameObject __gameObject = Spawn(p_type, p_position, transform);
+        _childObjects.Add(__gameObject.GetComponent<LevelObject>());
+        __gameObject.GetComponent<LevelObject>().onDespawn += delegate (AssetType p_assetType, GameObject p_gameObject)
+        {
+            _childObjects.Remove(p_gameObject.GetComponent<LevelObject>());
+        };
+        return __gameObject;
+
+    }
 
     private GameObject Spawn(AssetType p_type, Vector2 p_position, Transform p_parent)
     {
@@ -111,9 +127,11 @@ public class PoolManager : SystemManager
             if (__poolFractionByType.Count > 0)
             {
                 __objectToRespawn = __poolFractionByType[__poolFractionByType.Count-1];
+                __objectToRespawn.transform.position = p_position;
+                __objectToRespawn.transform.SetParent(p_parent);
                 __objectToRespawn.GetComponent<LevelObject>().onDespawn = Despawn;
                 __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = Spawn;
-                __objectToRespawn.GetComponent<LevelObject>().J_Start();
+                __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = Spawn;
                 __poolFractionByType.RemoveAt(__poolFractionByType.Count - 1);
             }
         }
@@ -123,7 +141,7 @@ public class PoolManager : SystemManager
             __objectToRespawn = Instantiate(assetDict[p_type].gameObject, p_position, Quaternion.identity, p_parent);
             __objectToRespawn.GetComponent<LevelObject>().onDespawn = Despawn;
             __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = Spawn;
-            __objectToRespawn.GetComponent<LevelObject>().J_Start();
+            __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = Spawn;  
 
         }
 
@@ -148,6 +166,7 @@ public class PoolManager : SystemManager
             _levelObjectPool.Add(p_type, __poolFractionByType);
         }
 
+        p_gameObject.transform.SetParent(_bufferPool);
     }
 
     public override void J_Update()
@@ -156,7 +175,9 @@ public class PoolManager : SystemManager
         {
             _gameAreaArray[i].J_Update();
         }
+        for (int i = 0; i < _childObjects.Count; i++)
+        {
+            _childObjects[i].J_Update();
+        }
     }
-
-
 }

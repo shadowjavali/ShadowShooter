@@ -6,6 +6,8 @@ public class MasterManager : MonoBehaviour {
 
     [SerializeField] CameraManager _cameramanager;
     [SerializeField] PoolManager _poolManager;
+    [SerializeField] AO_TimerManager _timerManager;
+    [SerializeField] AO_TweenManager _tweenManager;
 
     void Start ()
     {
@@ -17,6 +19,8 @@ public class MasterManager : MonoBehaviour {
 	void Update ()
     {
         _poolManager.J_Update();
+        _timerManager.AO_Update();
+        _tweenManager.AO_Update();
 
     }
 }

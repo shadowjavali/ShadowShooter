@@ -4,21 +4,25 @@ using UnityEngine;
 
 public class Bullet : LevelObject 
 {
-    public float speed = 0.1f;
+    public float speed;
 
     private Vector3 shootDirection;
 
-	void Start () 
+	public override void J_Start () 
     {
-        float __x = Mathf.Rad2Deg * Mathf.Cos(transform.eulerAngles.z);
-        float __y = Mathf.Rad2Deg * Mathf.Sin(transform.eulerAngles.z);
+        float __x =  Mathf.Cos(Mathf.Deg2Rad * transform.eulerAngles.z);
+        float __y =  Mathf.Sin(Mathf.Deg2Rad *  transform.eulerAngles.z);
         shootDirection = new Vector3(__x, __y, 0f);
-        Destroy(gameObject, 2f);
+
+        AO_Timer __timer = new AO_Timer(2, delegate ()
+         {
+             Despawn();
+         });
     }
 
-    void Update()
+    public override void J_Update()
     {
-
+       
         Vector3 __newPosition = Time.deltaTime * speed * shootDirection;
         transform.position += __newPosition;
     }
