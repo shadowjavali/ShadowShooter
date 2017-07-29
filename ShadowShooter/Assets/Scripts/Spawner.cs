@@ -7,12 +7,25 @@ public class Spawner : MonoBehaviour
 {
     private List<LevelObject> _levelObjects =  new List<LevelObject>();
 
-    [SerializeField] private PoolManager.AssetType _type;
+    public PoolManager.AssetType type;
     public Func<PoolManager.AssetType, Vector2, GameObject> onSpawn;
 
     public void Spawn()
     {
-        _levelObjects.Add(onSpawn(_type, transform.position).GetComponent<LevelObject>());
+        _levelObjects.Add(onSpawn(type, transform.position).GetComponent<LevelObject>());
+    }
+
+    public virtual void J_Start()
+    {
+
+    }
+
+    public virtual void J_Update()
+    {
+        for (int i=0; i< _levelObjects.Count;i++)
+        {
+            _levelObjects[i].J_Update();
+        }
     }
 
 }

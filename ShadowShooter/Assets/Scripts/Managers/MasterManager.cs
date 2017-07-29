@@ -9,11 +9,14 @@ public class MasterManager : MonoBehaviour {
 
     void Start ()
     {
-		
-	}
+        _poolManager.J_Start();
+        _poolManager.J_Spawn(PoolManager.GameArea.AREA_0, PoolManager.AssetType.PLAYER);
+
+    }    
 
 	void Update ()
     {
-		
-	}
+        _poolManager.J_Update();
+
+    }
 }
