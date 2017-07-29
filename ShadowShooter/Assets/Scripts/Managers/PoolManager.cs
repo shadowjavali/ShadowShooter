@@ -79,6 +79,11 @@ public class PoolManager : SystemManager
 
 #endregion
 
+    public void Spawn(GameArea p_area, AssetType p_assetType)
+    {
+
+    }
+
     private GameObject Spawn(AssetType p_type, Vector2 p_position, Transform p_parent)
     {
         GameObject __objectToRespawn = null;
