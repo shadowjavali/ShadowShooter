@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Player : LevelObject
 {
@@ -10,13 +11,15 @@ public class Player : LevelObject
     [Header("PlayerAttributes")]
     public float maxHealth = 10;
     public float moveSpeed = 0.75f;
-    public float rateOfFire = 1;
+    public float rateOfFire = 1; 
 
-    
+    private List<LevelObject> _bullets = new List<LevelObject>();
+
     private float _shootCountdownTimer;
 
-    void Update()
-    {    
+    public override void J_Update()
+    {
+        base.J_Update();  
         HandleInputs();
     }
 
@@ -24,6 +27,14 @@ public class Player : LevelObject
     {
         HandleWalkingInputs();
         HandleShootingInputs();
+    }
+
+    void UpdateBullets()
+    {
+        for (int i=0; i< _bullets.Count;i++)
+        {
+            _bullets[i].J_Update();
+        }
     }
 
     void HandleWalkingInputs()
@@ -68,7 +79,16 @@ public class Player : LevelObject
 
     void Shoot()
     {
-        
+        if (onSpawnChild != null)
+        {
+            LevelObject __bullet = onSpawnChild(PoolManager.AssetType.BULLET, shootStartTransform.position, transform).GetComponent<LevelObject>();
+            __bullet.onDespawn += delegate(PoolManager.AssetType p_type, GameObject p_gameobject)
+            {
+                _bullets.Remove(p_gameobject.GetComponent<LevelObject>());
+            };
+            _bullets.Add(__bullet);
+        }
+
         //pool manager de merda spawna a bullet
     }
 }

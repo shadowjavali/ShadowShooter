@@ -7,6 +7,7 @@ public class LevelObject : MonoBehaviour
 {
     [SerializeField] protected PoolManager.AssetType _assetType;
     public Action<PoolManager.AssetType,GameObject> onDespawn;
+    public Func<PoolManager.AssetType, Vector2, Transform, GameObject> onSpawnChild;
 
     public virtual void J_Start()
     {

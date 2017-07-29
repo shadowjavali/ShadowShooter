@@ -112,6 +112,7 @@ public class PoolManager : SystemManager
             {
                 __objectToRespawn = __poolFractionByType[__poolFractionByType.Count-1];
                 __objectToRespawn.GetComponent<LevelObject>().onDespawn = Despawn;
+                __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = Spawn;
                 __objectToRespawn.GetComponent<LevelObject>().J_Start();
                 __poolFractionByType.RemoveAt(__poolFractionByType.Count - 1);
             }
@@ -121,6 +122,7 @@ public class PoolManager : SystemManager
         {
             __objectToRespawn = Instantiate(assetDict[p_type].gameObject, p_position, Quaternion.identity, p_parent);
             __objectToRespawn.GetComponent<LevelObject>().onDespawn = Despawn;
+            __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = Spawn;
             __objectToRespawn.GetComponent<LevelObject>().J_Start();
 
         }
