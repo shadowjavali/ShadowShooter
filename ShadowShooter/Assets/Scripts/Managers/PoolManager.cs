@@ -10,7 +10,8 @@ public class PoolManager : SystemManager
 
     public enum AssetType
     {
-        PLAYER
+        PLAYER,
+        BULLET
     }
 
     public enum GameArea
