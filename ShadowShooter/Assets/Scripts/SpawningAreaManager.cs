@@ -21,6 +21,7 @@ public class SpawningAreaManager : MonoBehaviour
         for (int i=0; i< _spawners.Length; i++)
         {
             _spawners[i].onSpawn += Spawn;
+            _spawners[i].J_Start();
         }
     }
 
@@ -46,8 +47,51 @@ public class SpawningAreaManager : MonoBehaviour
 
         if (__spawnersOfType.Count > 0)
         {
+            int __maxQueue = 0;
             int __index = UnityEngine.Random.Range(0, __spawnersOfType.Count - 1);
-            __spawnersOfType[__index].Spawn();
+            int __firstRandomizedIndex = __index;
+
+            int __emergencyExit = 0;
+
+            while (__spawnersOfType[__index].Spawn(__maxQueue) == false)
+            {
+                if (__spawnersOfType.Count == 1)
+                {
+                    __maxQueue++;
+                }
+                else
+                {
+                    if (__index == __firstRandomizedIndex - 1)
+                    {
+                        __maxQueue++;
+                        __index = __firstRandomizedIndex;
+                    }
+                    if (__index < __spawnersOfType.Count - 1)
+                    {
+                        __index++;
+                    }
+                    else if ((__index == __spawnersOfType.Count - 1) && (__firstRandomizedIndex == 0))
+                    {
+                        __maxQueue++;
+                        __index = __firstRandomizedIndex;
+                    }
+                    else
+                    {
+                        __index = 0;
+                    }
+                }                             
+
+                __emergencyExit++;
+                if (__emergencyExit > 100)
+                {
+                    Debug.LogError("Something is wrong: MaxQueve = "  + __maxQueue + " / __index = " + __index);
+                    break;                
+
+                }
+                   
+            }          
+
+
             return true;
         }
 
@@ -58,7 +102,7 @@ public class SpawningAreaManager : MonoBehaviour
     {
         if (_spawners[p_spawnerIndex].type == p_type)
         {
-            _spawners[p_spawnerIndex].Spawn();
+            _spawners[p_spawnerIndex].Spawn(1000);
             return true;
         }
 

@@ -11,7 +11,9 @@ public class PoolManager : SystemManager
     public enum AssetType
     {
         PLAYER,
-        BULLET
+        BULLET,
+        ENEMY_1,
+        ENEMY_2
     }
 
     public enum GameArea
@@ -87,21 +89,22 @@ public class PoolManager : SystemManager
 
     public bool J_Spawn(GameArea p_area, AssetType p_assetType, int p_quantity = 1)
     {
-        for (int i = 0; i < _gameAreaArray.Length; i++ )
+
+        for (int i = 0; i < p_quantity; i++)
         {
-            if (_gameAreaArray[i].area == p_area)
+            for (int j = 0; j < _gameAreaArray.Length; j++)
             {
-                if (_gameAreaArray[i].J_Spawn(p_assetType))
+                if (_gameAreaArray[j].area == p_area)
                 {
-                    p_quantity--;
+                    if (!_gameAreaArray[j].J_Spawn(p_assetType))
+                        return false;
                 }
             }
         }
 
-        if (p_quantity <= 0)
-            return true;
-        else
-            return false;
+        return true;
+       
+            
 
     }
     private GameObject Spawn(AssetType p_type, Vector2 p_position)
