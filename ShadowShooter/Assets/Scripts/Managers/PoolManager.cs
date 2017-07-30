@@ -86,11 +86,9 @@ public class PoolManager : SystemManager
                 return false;                
         }
 
-        return true;
-       
-            
-
+        return true;    
     }
+
     private GameObject Spawn(AssetType p_type, Vector2 p_position)
     {
         GameObject __gameObject = Spawn(p_type, p_position, transform.parent);
@@ -146,6 +144,8 @@ public class PoolManager : SystemManager
             __objectToRespawn.GetComponent<LevelObject>().onDespawn = Despawn;
             __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = Spawn;
             __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = Spawn;
+                
+            __objectToRespawn.transform.SetAsFirstSibling();
 
             if ((p_type == AssetType.DOOR_H) || (p_type == AssetType.DOOR_V))
             {

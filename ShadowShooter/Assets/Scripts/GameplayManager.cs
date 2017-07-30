@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameplayManager : SystemManager
 {
     [SerializeField] PoolManager _poolManager;
+    [SerializeField] ScreenCanvas _screenCanvas;
 
     private Dictionary<Vector2, SpawningAreaManager> _gameAreaCols = new Dictionary<Vector2, SpawningAreaManager>();
 
@@ -16,15 +17,14 @@ public class GameplayManager : SystemManager
     public override void J_Start()
     {
         InitializeAreasDictionary();
-        _poolManager.onSpawnArea = InitializeArea;
+        _poolManager.onSpawnArea = HandleOnSpawnArea;
         _poolManager.J_Start();
         InitializeArea(SpawningAreaManager.GameAreaType.CENTRAL_AREA, new Vector2(0,0), SpawningAreaManager.DoorPosition.NONE);
 
         
+        _poolManager.J_Spawn(_gameAreaCols[new Vector2(0, 0)], PoolManager.AssetType.PLAYER);
 
-        _poolManager.J_Spawn(_gameAreaCols[new Vector2(0,0)], PoolManager.AssetType.PLAYER);
-
-       // _poolManager.J_Spawn(PoolManager.GameArea.CENTRAL_AREA, PoolManager.AssetType.ENEMY_1, 12);
+        // _poolManager.J_Spawn(PoolManager.GameArea.CENTRAL_AREA, PoolManager.AssetType.ENEMY_1, 12);
     }
 
     private void InitializeAreasDictionary()
@@ -34,6 +34,12 @@ public class GameplayManager : SystemManager
         {
             _gameAreaPrefabDict.Add(_gameAreaPrefabArray[i].GetComponent<SpawningAreaManager>().areaType, _gameAreaPrefabArray[i]);
         }
+    }
+
+    private void HandleOnSpawnArea(SpawningAreaManager.GameAreaType p_areaType, Vector2 p_gridPos, SpawningAreaManager.DoorPosition p_lastDoor)
+    {
+        int __randomAreaIndex = Random.Range(1, SpawningAreaManager.GameAreaType.GetNames(typeof(SpawningAreaManager.GameAreaType)).Length - 1);
+        InitializeArea((SpawningAreaManager.GameAreaType)__randomAreaIndex, p_gridPos, p_lastDoor);
     }
 
     private void InitializeArea(SpawningAreaManager.GameAreaType p_areaType, Vector2 p_gridPos,SpawningAreaManager.DoorPosition p_lastDoor)

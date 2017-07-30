@@ -17,13 +17,7 @@ public class Player : LevelObject
     private CameraManager _cameraManager;
 
     private float _shootCountdownTimer;
-
-    public override void J_Update()
-    {
-        base.J_Update();  
-        HandleInputs();
-        _cameraManager.J_Update();
-    }
+    private float _currentHealth;
 
     public override void J_Start(params object[] p_args)
     {
@@ -31,6 +25,21 @@ public class Player : LevelObject
 
         _cameraManager = onSpawnFreeObject(PoolManager.AssetType.CAMERAMANAGER, transform.position).GetComponent<CameraManager>();
         _cameraManager.SetPlayerToFollow(transform);
+        _currentHealth = maxHealth;
+        ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
+
+    }
+
+    public override void J_Update()
+    {
+        base.J_Update();
+        HandleInputs();        
+        _cameraManager.J_Update();
+    }
+
+    public float GetHealthPercentage()
+    {
+        return _currentHealth / maxHealth;
     }
 
     void HandleInputs()
@@ -41,10 +50,9 @@ public class Player : LevelObject
 
     void HandleWalkingInputs()
     {
-
         Vector2 __deltaPosition = Vector2.zero;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-        {
+        { 
             __deltaPosition += Vector2.up * moveSpeed;
         }
 
@@ -62,6 +70,8 @@ public class Player : LevelObject
         {
             __deltaPosition += Vector2.right * moveSpeed;
         }
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, __deltaPosition, Mathf.Infinity, LayerMask.NameToLayer("LevelObject"));
+        Debug.DrawRay(transform.position, __deltaPosition, Color.red);
 
         transform.localPosition += new Vector3(__deltaPosition.x / 10, __deltaPosition.y / 10, 0);
     }
@@ -96,5 +106,17 @@ public class Player : LevelObject
             __bullet.J_Start();
             __bullet.gameObject.name = "Bullet_Player";
         }
+    }
+
+    public void InflictDamage(float p_damage)
+    {
+        _currentHealth -= p_damage;
+        Debug.Log(_currentHealth);
+        if (_currentHealth <= 0)
+        {
+            _currentHealth = 0;
+            Debug.Log("Player is dead");
+        }
+        ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
     }
 }
