@@ -38,10 +38,10 @@ public class PoolManager : SystemManager
     [SerializeField]
     private Transform _bufferPool;
 
-   private Dictionary<AssetType, GameObject> assetDict;
+    private Dictionary<AssetType, GameObject> assetDict;
     private Dictionary<AssetType, List<GameObject>> _levelObjectPool = new Dictionary<AssetType, List<GameObject>>() ;
 
-   
+    public Action<SpawningAreaManager.GameAreaType, Vector2, SpawningAreaManager.DoorPosition> onSpawnArea;
 
     private List<LevelObject> _childObjects = new List<LevelObject>();
 
@@ -55,10 +55,7 @@ public class PoolManager : SystemManager
 
         FillActions();
         SetDictionary();
-
-    }
-
-   
+    }   
 
     private void FillActions()
     {
@@ -126,24 +123,17 @@ public class PoolManager : SystemManager
                 __objectToRespawn.transform.position = p_position;
                 __objectToRespawn.transform.SetParent(p_parent);
 
-                __objectToRespawn.GetComponent<LevelObject>().onDespawn = null;
-                __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = null;
-                __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = null;
-
                 __objectToRespawn.GetComponent<LevelObject>().onDespawn = Despawn;
                 __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = Spawn;
                 __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = Spawn;
                 __poolFractionByType.Remove(__poolFractionByType[__poolFractionByType.Count - 1]);
 
-
                 _levelObjectPool[p_type] = __poolFractionByType;
 
-
-                for (int i=0; i < _levelObjectPool[p_type].Count; i++)
+                if ((p_type == AssetType.DOOR_H) || (p_type == AssetType.DOOR_V))
                 {
-                    Debug.Log(_levelObjectPool[p_type][i].name);
+                    __objectToRespawn.GetComponent<Door>().onSpawnArea = onSpawnArea;
                 }
-
 
                 __spawned = true;
             }
@@ -153,13 +143,14 @@ public class PoolManager : SystemManager
         {
             __objectToRespawn = Instantiate(assetDict[p_type].gameObject, p_position, Quaternion.identity, p_parent);
 
-            __objectToRespawn.GetComponent<LevelObject>().onDespawn = null;
-            __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = null;
-            __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = null;
-
             __objectToRespawn.GetComponent<LevelObject>().onDespawn = Despawn;
             __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = Spawn;
-            __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = Spawn;  
+            __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = Spawn;
+
+            if ((p_type == AssetType.DOOR_H) || (p_type == AssetType.DOOR_V))
+            {
+                __objectToRespawn.GetComponent<Door>().onSpawnArea = onSpawnArea;
+            }
 
         }
 

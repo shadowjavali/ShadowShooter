@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class Door : LevelObject
 {
@@ -14,6 +15,12 @@ public class Door : LevelObject
 
     [SerializeField] protected Animator _animator;
     [SerializeField] protected Collider2D _collider;
+
+    private SpawningAreaManager.DoorPosition _doorType;
+
+    private Vector2 _gridItOpens;
+
+    public Action<SpawningAreaManager.GameAreaType, Vector2, SpawningAreaManager.DoorPosition> onSpawnArea;
 
     public enum DoorAnimationEvents
     {
@@ -37,6 +44,10 @@ public class Door : LevelObject
         _spriteRendererLeft.flipX = (bool)p_args[0];
         _spriteRendererLeft.flipY = (bool)p_args[1];
 
+        _gridItOpens = (Vector2)p_args[2];
+
+        _doorType = (SpawningAreaManager.DoorPosition)p_args[3];
+
         base.J_Start(p_args);
     }
 
@@ -44,14 +55,21 @@ public class Door : LevelObject
     {
         if (collision.transform.tag == "Player")
         {
-            OpenDoor();
+            J_OpenDoor();
+            onSpawnArea(SpawningAreaManager.GameAreaType.AREA_TYPE_0, _gridItOpens, _doorType);
         }       
     }
 
-    private void OpenDoor()
+    public void J_OpenDoor()
     {
         _animator.SetTrigger("Open");
-        _collider.enabled = false;
+        _collider.enabled = false;      
+    }
+
+    private void CreateArea()
+    {
+
+
     }
 
     public void AnimationCalledEvent(DoorAnimationEvents p_event)
