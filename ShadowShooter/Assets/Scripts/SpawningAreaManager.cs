@@ -5,15 +5,43 @@ using System;
 
 public class SpawningAreaManager : MonoBehaviour
 {
-    public PoolManager.GameArea area;
+    public enum GameAreaType
+    {
+        CENTRAL_AREA,
+        AREA_TYPE_0,
+        AREA_TYPE_2,
+        AREA_TYPE_3,
+        AREA_TYPE_4
+
+    }
+
+    private Vector2 _gridPos;
+
+    public GameAreaType areaType;
     public Func<PoolManager.AssetType, Vector2, Transform, GameObject> onSpawn;
 
-    private Spawner[] _spawners;
+    [SerializeField] private Spawner[] _spawners;
 
-    public void J_Start()
+    public void J_Start(Vector2 p_gridPos)
     {
+        _gridPos = p_gridPos;
         InitializeSpawners();
         SpawnNormalWalls();
+        SpawnCornerWalls();
+        SpawnDoors();
+    }
+
+    private void SpawnCornerWalls()
+    {
+        GameObject __callCornerLowerLeft = onSpawn(PoolManager.AssetType.WALL_CORNER, new Vector2(-4 * 1.28f, (-3.5f * 1.28f) - 0.64f), transform);
+        GameObject __callCornerLowerRight = onSpawn(PoolManager.AssetType.WALL_CORNER, new Vector2(4 * 1.28f, (-3.5f * 1.28f) - 0.64f), transform);
+        GameObject __callCornerUpperRight = onSpawn(PoolManager.AssetType.WALL_CORNER, new Vector2((3.5f * 1.28f) + 0.64f, 4 * 1.28f), transform);
+        GameObject __callCornerUpperLeft = onSpawn(PoolManager.AssetType.WALL_CORNER, new Vector2((-3.5f * 1.28f) - 0.64f, 4 * 1.28f), transform);
+
+        __callCornerLowerLeft.GetComponent<Wall>().J_Start(new object[] { false, false });
+        __callCornerLowerRight.GetComponent<Wall>().J_Start(new object[] { true, false });
+        __callCornerUpperRight.GetComponent<Wall>().J_Start(new object[] { true, true });
+        __callCornerUpperLeft.GetComponent<Wall>().J_Start(new object[] { false, true });
     }
 
     private void SpawnNormalWalls()
@@ -21,18 +49,26 @@ public class SpawningAreaManager : MonoBehaviour
         for (int row=-3; row < 4; row++)
         {
             if (row != 0)
-                onSpawn(PoolManager.AssetType.WALL_NORMAL_H, new Vector2(row * 1.28f, (-3.5f * 1.28f) - 0.64f), transform);
+                onSpawn(PoolManager.AssetType.WALL_NORMAL_H, new Vector2(row * 1.28f, (-3.5f * 1.28f) - 0.64f), transform).GetComponent<Wall>().J_Start(new object[] { false, false });
             if (row != 0)
-                onSpawn(PoolManager.AssetType.WALL_NORMAL_H, new Vector2(row * 1.28f, (3.5f * 1.28f) + 0.64f), transform).GetComponent<SpriteRenderer>().flipY = true;
+                onSpawn(PoolManager.AssetType.WALL_NORMAL_H, new Vector2(row * 1.28f, (3.5f * 1.28f) + 0.64f), transform).GetComponent<Wall>().J_Start(new object[] { false, true }); //.flipY = true;
         }
         for (int col = -3; col < 4; col++)
         {
             if (col != 0)
-                onSpawn(PoolManager.AssetType.WALL_NORMAL_V, new Vector2((-3.5f * 1.28f ) - 0.64f, col * 1.28f), transform);
+                onSpawn(PoolManager.AssetType.WALL_NORMAL_V, new Vector2((-3.5f * 1.28f ) - 0.64f, col * 1.28f), transform).GetComponent<Wall>().J_Start(new object[] { false, false });
             if (col != 0)
-                onSpawn(PoolManager.AssetType.WALL_NORMAL_V, new Vector2((3.5f * 1.28f) + 0.64f, col * 1.28f), transform).GetComponent<SpriteRenderer>().flipX = true;
+                onSpawn(PoolManager.AssetType.WALL_NORMAL_V, new Vector2((3.5f * 1.28f) + 0.64f, col * 1.28f), transform).GetComponent<Wall>().J_Start(new object[] { true, false });//.flipX = true;
         }
+    }
 
+    private void SpawnDoors()
+    {
+        onSpawn(PoolManager.AssetType.DOOR_V, new Vector2((-3.5f * 1.28f) - 0.64f, 0), transform).GetComponent<Door>().J_Start(new object[] { false, false });
+        onSpawn(PoolManager.AssetType.DOOR_V, new Vector2((3.5f * 1.28f) + 0.64f, 0), transform).GetComponent<Door>().J_Start(new object[] { true, false });
+
+        onSpawn(PoolManager.AssetType.DOOR_H, new Vector2(0,(-3.5f * 1.28f) - 0.64f), transform).GetComponent<Door>().J_Start(new object[] { false, true });
+        onSpawn(PoolManager.AssetType.DOOR_H, new Vector2(0,(3.5f * 1.28f) + 0.64f), transform).GetComponent<Door>().J_Start(new object[] { false, false });
 
     }
 
@@ -106,10 +142,9 @@ public class SpawningAreaManager : MonoBehaviour
                 if (__emergencyExit > 100)
                 {
                     Debug.LogError("Something is wrong: MaxQueve = "  + __maxQueue + " / __index = " + __index);
-                    break;                
+                    break;            
 
-                }
-                   
+                }                   
             }          
 
 

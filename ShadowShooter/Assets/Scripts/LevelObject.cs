@@ -10,11 +10,13 @@ public class LevelObject : MonoBehaviour
     public Func<PoolManager.AssetType, Vector2, Transform, GameObject> onSpawnChild;
     public Func<PoolManager.AssetType, Vector2, GameObject> onSpawnFreeObject;
 
+    protected bool _active = false;
+
     protected List<LevelObject> _childObjects = new List<LevelObject>();
 
     public virtual void J_Start(params object[] p_args)
     {
-     
+        _active = true;
     }
 
     public virtual void J_Update()
@@ -27,6 +29,7 @@ public class LevelObject : MonoBehaviour
 
     public virtual void Despawn()
     {
+        _active = false;
         if (onDespawn != null)
         {
             onDespawn(_assetType, gameObject);

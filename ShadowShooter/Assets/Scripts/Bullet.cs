@@ -13,6 +13,7 @@ public class Bullet : LevelObject
 
     public override void J_Start (params object[] p_args) 
     {
+        base.J_Start(p_args);
         float __x =  Mathf.Cos(Mathf.Deg2Rad * transform.eulerAngles.z);
         float __y =  Mathf.Sin(Mathf.Deg2Rad *  transform.eulerAngles.z);
         shootDirection = new Vector3(__x, __y, 0f);
@@ -25,17 +26,19 @@ public class Bullet : LevelObject
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.transform.tag == "Enemy")
+        if (_active)
         {
-            collision.transform.GetComponent<Enemy>().Despawn();
-           
+
+            if (collision.transform.tag == "Enemy")
+            {
+                collision.transform.GetComponent<Enemy>().Despawn();
+
+            }
+
+            if (_timer != null)
+                _timer.Cancel();
+            Despawn();
         }
-
-        Debug.Log(collision.transform.tag);
-
-        if (_timer != null)
-            _timer.Cancel();
-        Despawn();
     }
 
     public override void J_Update()

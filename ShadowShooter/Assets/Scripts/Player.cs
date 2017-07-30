@@ -94,6 +94,7 @@ public class Player : LevelObject
             LevelObject __bullet = onSpawnFreeObject(PoolManager.AssetType.BULLET, shootStartTransform.position).GetComponent<LevelObject>();
             __bullet.transform.eulerAngles = shootStartTransform.eulerAngles;
             __bullet.J_Start();
+            __bullet.gameObject.name = "Bullet_Player";
         }
     }
 }

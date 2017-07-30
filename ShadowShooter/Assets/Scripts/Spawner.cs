@@ -22,6 +22,10 @@ public class Spawner : MonoBehaviour
         {
             LevelObject __levelObject = onSpawn(type, transform.position).GetComponent<LevelObject>();
             __levelObject.J_Start();
+            __levelObject.onDespawn += delegate (PoolManager.AssetType p_type, GameObject p_object)
+            {
+                _levelObjects.Remove(p_object.GetComponent<LevelObject>());
+            };
             _levelObjects.Add(__levelObject);
 
             _empty = false;

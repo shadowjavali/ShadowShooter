@@ -14,23 +14,15 @@ public class PoolManager : SystemManager
         BULLET = 1,
         ENEMY_1 = 2,
         ENEMY_2 = 3,
-
+        TURRET = 6,
         CAMERAMANAGER = 9,
-
         WALL_NORMAL_V = 10,
         WALL_NORMAL_H = 11,
-        WALL_CORNER = 12
+        WALL_CORNER = 12,
+        DOOR_H = 13,
+        DOOR_V = 14
     }
-
-    public enum GameArea
-    {
-        CENTRAL_AREA,
-        AREA_TYPE_0,
-        AREA_TYPE_2,
-        AREA_TYPE_3,
-        AREA_TYPE_4
-
-    }
+  
 
     [System.Serializable]
     public struct Asset
@@ -49,7 +41,7 @@ public class PoolManager : SystemManager
    private Dictionary<AssetType, GameObject> assetDict;
     private Dictionary<AssetType, List<GameObject>> _levelObjectPool = new Dictionary<AssetType, List<GameObject>>() ;
 
-    private SpawningAreaManager[] _gameAreaArray;
+   
 
     private List<LevelObject> _childObjects = new List<LevelObject>();
 
@@ -63,18 +55,10 @@ public class PoolManager : SystemManager
 
         FillActions();
         SetDictionary();
-        InitializeAllAreas();
+
     }
 
-    private void InitializeAllAreas()
-    {
-        _gameAreaArray = GetComponentsInChildren<SpawningAreaManager>();
-        for (int i=0; i< _gameAreaArray.Length; i++)
-        {
-            _gameAreaArray[i].onSpawn = JFunc_Spawn;
-            _gameAreaArray[i].J_Start();
-        }
-    }
+   
 
     private void FillActions()
     {
@@ -97,19 +81,12 @@ public class PoolManager : SystemManager
 
 #endregion
 
-    public bool J_Spawn(GameArea p_area, AssetType p_assetType, int p_quantity = 1)
+    public bool J_Spawn(SpawningAreaManager p_area, AssetType p_assetType, int p_quantity = 1)
     {
-
         for (int i = 0; i < p_quantity; i++)
-        {
-            for (int j = 0; j < _gameAreaArray.Length; j++)
-            {
-                if (_gameAreaArray[j].area == p_area)
-                {
-                    if (!_gameAreaArray[j].J_Spawn(p_assetType))
-                        return false;
-                }
-            }
+        {          
+            if (!p_area.J_Spawn(p_assetType))
+                return false;                
         }
 
         return true;
@@ -119,12 +96,16 @@ public class PoolManager : SystemManager
     }
     private GameObject Spawn(AssetType p_type, Vector2 p_position)
     {
-        GameObject __gameObject = Spawn(p_type, p_position, transform);
+        GameObject __gameObject = Spawn(p_type, p_position, transform.parent);
         _childObjects.Add(__gameObject.GetComponent<LevelObject>());
+
+
         __gameObject.GetComponent<LevelObject>().onDespawn += delegate (AssetType p_assetType, GameObject p_gameObject)
         {
             _childObjects.Remove(p_gameObject.GetComponent<LevelObject>());
         };
+
+
         return __gameObject;
 
     }
@@ -135,6 +116,8 @@ public class PoolManager : SystemManager
 
         List<GameObject> __poolFractionByType = null;
 
+        bool __spawned = false;
+
         if (_levelObjectPool.TryGetValue(p_type, out __poolFractionByType))
         {
             if (__poolFractionByType.Count > 0)
@@ -142,16 +125,38 @@ public class PoolManager : SystemManager
                 __objectToRespawn = __poolFractionByType[__poolFractionByType.Count-1];
                 __objectToRespawn.transform.position = p_position;
                 __objectToRespawn.transform.SetParent(p_parent);
+
+                __objectToRespawn.GetComponent<LevelObject>().onDespawn = null;
+                __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = null;
+                __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = null;
+
                 __objectToRespawn.GetComponent<LevelObject>().onDespawn = Despawn;
                 __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = Spawn;
                 __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = Spawn;
-                __poolFractionByType.RemoveAt(__poolFractionByType.Count - 1);
+                __poolFractionByType.Remove(__poolFractionByType[__poolFractionByType.Count - 1]);
+
+
+                _levelObjectPool[p_type] = __poolFractionByType;
+
+
+                for (int i=0; i < _levelObjectPool[p_type].Count; i++)
+                {
+                    Debug.Log(_levelObjectPool[p_type][i].name);
+                }
+
+
+                __spawned = true;
             }
         }
 
-        if (__objectToRespawn == null) //didn't find any objects in pool fraction
+        if (__spawned == false) //didn't find any objects in pool fraction
         {
             __objectToRespawn = Instantiate(assetDict[p_type].gameObject, p_position, Quaternion.identity, p_parent);
+
+            __objectToRespawn.GetComponent<LevelObject>().onDespawn = null;
+            __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = null;
+            __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = null;
+
             __objectToRespawn.GetComponent<LevelObject>().onDespawn = Despawn;
             __objectToRespawn.GetComponent<LevelObject>().onSpawnChild = Spawn;
             __objectToRespawn.GetComponent<LevelObject>().onSpawnFreeObject = Spawn;  
@@ -171,11 +176,13 @@ public class PoolManager : SystemManager
         if (_levelObjectPool.TryGetValue(p_type, out __poolFractionByType))
         {
             __poolFractionByType.Add(p_gameObject);
+            p_gameObject.name = p_gameObject.name + "_Pool";
         }
         else
         {
             __poolFractionByType = new List<GameObject>();
             __poolFractionByType.Add(p_gameObject);
+            p_gameObject.name = p_gameObject.name + "_Pool";
             _levelObjectPool.Add(p_type, __poolFractionByType);
         }
 
@@ -184,10 +191,7 @@ public class PoolManager : SystemManager
 
     public override void J_Update()
     {
-        for (int i = 0; i < _gameAreaArray.Length; i++)
-        {
-            _gameAreaArray[i].J_Update();
-        }
+       
         for (int i = 0; i < _childObjects.Count; i++)
         {
             _childObjects[i].J_Update();
