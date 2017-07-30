@@ -19,21 +19,22 @@ public class Player : LevelObject
     private float _shootCountdownTimer;
     private float _currentHealth;
 
-    public override void J_Update()
-    {
-        base.J_Update();
-        HandleInputs();
-        _currentHealth = maxHealth;
-        _cameraManager.J_Update();
-        ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
-    }
-
     public override void J_Start(params object[] p_args)
     {
         base.J_Start();
 
         _cameraManager = onSpawnFreeObject(PoolManager.AssetType.CAMERAMANAGER, transform.position).GetComponent<CameraManager>();
         _cameraManager.SetPlayerToFollow(transform);
+        _currentHealth = maxHealth;
+        ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
+
+    }
+
+    public override void J_Update()
+    {
+        base.J_Update();
+        HandleInputs();        
+        _cameraManager.J_Update();
     }
 
     public float GetHealthPercentage()
@@ -105,5 +106,17 @@ public class Player : LevelObject
             __bullet.J_Start();
             __bullet.gameObject.name = "Bullet_Player";
         }
+    }
+
+    public void InflictDamage(float p_damage)
+    {
+        _currentHealth -= p_damage;
+        Debug.Log(_currentHealth);
+        if (_currentHealth <= 0)
+        {
+            _currentHealth = 0;
+            Debug.Log("Player is dead");
+        }
+        ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
     }
 }

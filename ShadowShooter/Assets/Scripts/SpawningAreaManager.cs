@@ -12,7 +12,6 @@ public class SpawningAreaManager : MonoBehaviour
         AREA_TYPE_2,
         AREA_TYPE_3,
         AREA_TYPE_4
-
     }
 
     public enum DoorPosition
