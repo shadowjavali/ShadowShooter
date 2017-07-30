@@ -18,8 +18,12 @@ public class PoolManager : SystemManager
 
     public enum GameArea
     {
-        AREA_0,
-        AREA_1
+        CENTRAL_AREA,
+        AREA_TYPE_0,
+        AREA_TYPE_2,
+        AREA_TYPE_3,
+        AREA_TYPE_4
+
     }
 
     [System.Serializable]

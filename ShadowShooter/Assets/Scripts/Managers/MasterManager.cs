@@ -12,8 +12,8 @@ public class MasterManager : MonoBehaviour {
     void Start ()
     {
         _poolManager.J_Start();
-        _poolManager.J_Spawn(PoolManager.GameArea.AREA_0, PoolManager.AssetType.PLAYER);
-        _poolManager.J_Spawn(PoolManager.GameArea.AREA_0, PoolManager.AssetType.ENEMY_1, 12);
+        _poolManager.J_Spawn(PoolManager.GameArea.CENTRAL_AREA, PoolManager.AssetType.PLAYER);
+        _poolManager.J_Spawn(PoolManager.GameArea.CENTRAL_AREA, PoolManager.AssetType.ENEMY_1, 12);
 
     }    
 
