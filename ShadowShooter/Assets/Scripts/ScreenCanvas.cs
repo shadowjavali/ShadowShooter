@@ -35,7 +35,7 @@ public class ScreenCanvas : MonoBehaviour
         float __angleRad = Mathf.Atan2(__currentWorldPos.y, __currentWorldPos.x);
         float __angleDeg = (180 / Mathf.PI) * __angleRad;
 
-        arrow.GetComponent<RectTransform>().eulerAngles = new Vector3(0f, 0f, __angleDeg);
+        arrow.GetComponent<RectTransform>().eulerAngles = new Vector3(0f, 0f, __angleDeg+180);
     }
 
     public void SetHealthBarPercentage(float p_percentage)

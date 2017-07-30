@@ -9,6 +9,7 @@ public class Enemy : LevelObject
     public float speed = 1f;
     public float attackRate = 1f;
     public float damage = 1;
+    public float attackRange = 5;
 
     private Player _target;
     private float _attackCountdownTimer = 0f;
@@ -27,9 +28,11 @@ public class Enemy : LevelObject
         transform.eulerAngles = new Vector3(0f, 0f, __angleDeg+90);
 
         //HandleMovement
-        float __step = speed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, __step);
-
+        if (Vector3.Distance(transform.position, _target.transform.position) <= attackRange)
+        {
+            float __step = speed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, __step);        
+        }
         UpdateAttackCountdown();
     }
 
@@ -55,6 +58,6 @@ public class Enemy : LevelObject
                     collision.gameObject.GetComponent<Player>().InflictDamage(damage);
                 }
             }
-       // }
+       //}
     }
 }
