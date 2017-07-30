@@ -20,7 +20,7 @@ public class Player : LevelObject
 
     public override void J_Update()
     {
-        base.J_Update();  
+        base.J_Update();
         HandleInputs();
         _cameraManager.J_Update();
     }
@@ -44,7 +44,7 @@ public class Player : LevelObject
 
         Vector2 __deltaPosition = Vector2.zero;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-        {
+        { 
             __deltaPosition += Vector2.up * moveSpeed;
         }
 
@@ -62,7 +62,12 @@ public class Player : LevelObject
         {
             __deltaPosition += Vector2.right * moveSpeed;
         }
-
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, __deltaPosition, Mathf.Infinity, LayerMask.NameToLayer("LevelObject"));
+        Debug.DrawRay(transform.position, __deltaPosition, Color.red);
+        if (hit)
+        {
+            Debug.Log("col: " + hit.collider.gameObject.name);
+        }
         transform.localPosition += new Vector3(__deltaPosition.x / 10, __deltaPosition.y / 10, 0);
     }
 

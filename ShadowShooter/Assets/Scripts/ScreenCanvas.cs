@@ -16,8 +16,9 @@ public class ScreenCanvas : MonoBehaviour
 
     void UpdateArrowRotation()
     {
+        if (Camera.main == null)
+            return;
         Vector3 __currentWorldPos = Camera.main.ScreenToWorldPoint(new Vector2(Screen.width/2, Screen.height/2));
-        Debug.Log(__currentWorldPos);
         float __angleRad = Mathf.Atan2(__currentWorldPos.y, __currentWorldPos.x);
         float __angleDeg = (180 / Mathf.PI) * __angleRad;
 

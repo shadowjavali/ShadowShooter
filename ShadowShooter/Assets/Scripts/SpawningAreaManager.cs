@@ -7,7 +7,7 @@ public class SpawningAreaManager : MonoBehaviour
 {
     public enum GameAreaType
     {
-        CENTRAL_AREA,
+        CENTRAL_AREA = 0,
         AREA_TYPE_0,
         AREA_TYPE_2,
         AREA_TYPE_3,
