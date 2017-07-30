@@ -12,7 +12,7 @@ public class LevelObject : MonoBehaviour
 
     protected List<LevelObject> _childObjects = new List<LevelObject>();
 
-    public virtual void J_Start()
+    public virtual void J_Start(params object[] p_args)
     {
      
     }

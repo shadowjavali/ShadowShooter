@@ -11,7 +11,7 @@ public class Bullet : LevelObject
     AO_Timer _timer = null;
 
 
-    public override void J_Start () 
+    public override void J_Start (params object[] p_args) 
     {
         float __x =  Mathf.Cos(Mathf.Deg2Rad * transform.eulerAngles.z);
         float __y =  Mathf.Sin(Mathf.Deg2Rad *  transform.eulerAngles.z);

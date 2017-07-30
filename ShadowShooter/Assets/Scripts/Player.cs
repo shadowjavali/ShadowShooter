@@ -14,23 +14,13 @@ public class Player : LevelObject
     public float rateOfFire = 1;
 
     private Vector3 __lastMousePosition;
-    private CameraManager _cameraManager;
 
     private float _shootCountdownTimer;
 
     public override void J_Update()
     {
-        base.J_Update();  
+        base.J_Update();
         HandleInputs();
-        _cameraManager.J_Update();
-    }
-
-    public override void J_Start()
-    {
-        base.J_Start();
-
-        _cameraManager = onSpawnFreeObject(PoolManager.AssetType.CAMERAMANAGER, transform.position).GetComponent<CameraManager>();
-        _cameraManager.SetPlayerToFollow(transform);
     }
 
     void HandleInputs()
@@ -41,63 +31,48 @@ public class Player : LevelObject
 
     void HandleWalkingInputs()
     {
-        float __x = Mathf.Cos(Mathf.Deg2Rad * transform.eulerAngles.z);
-        float __y = Mathf.Sin(Mathf.Deg2Rad * transform.eulerAngles.z);
-
-        Vector2 __forwardAxis = new Vector2(__x, __y);
-
-        __x = Mathf.Cos(Mathf.Deg2Rad * (transform.eulerAngles.z + 90));
-        __y = Mathf.Sin(Mathf.Deg2Rad * (transform.eulerAngles.z + 90));
-
-        Vector2 __lateralAxis = new Vector2(__x, __y);
 
         Vector2 __deltaPosition = Vector2.zero;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         {
-            __deltaPosition += moveSpeed * __forwardAxis;
+            __deltaPosition += Vector2.up * moveSpeed;
         }
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
-            __deltaPosition += moveSpeed * __lateralAxis;
+            __deltaPosition += Vector2.left * moveSpeed;
         }
 
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
         {
-            __deltaPosition -= moveSpeed * __forwardAxis;
+            __deltaPosition += Vector2.down * moveSpeed;
         }
 
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
-            __deltaPosition -= moveSpeed * __lateralAxis;
-        }       
+            __deltaPosition += Vector2.right * moveSpeed;
+        }
 
-        transform.localPosition += new Vector3(__deltaPosition.x/10, __deltaPosition.y/10, 0);
+        transform.localPosition += new Vector3(__deltaPosition.x / 10, __deltaPosition.y / 10, 0);
     }
 
     void HandleShootingInputs()
     {
-        Vector3 __mouseWorldPos = Camera.main.WorldToScreenPoint(transform.position);      
+        Vector3 __mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-        if (__lastMousePosition != Input.mousePosition)
-        {
-            __lastMousePosition = Input.mousePosition;
-         
+        float __angleRad = Mathf.Atan2(__mouseWorldPos.y - transform.position.y, __mouseWorldPos.x - transform.position.x);
+        float __angleDeg = (180 / Mathf.PI) * __angleRad;
 
-        }
-
-        Vector3 __direction = __lastMousePosition - __mouseWorldPos;
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, Mathf.Atan2(__direction.y, __direction.x) * Mathf.Rad2Deg));
+        transform.eulerAngles = new Vector3(0f, 0f, __angleDeg);
 
 
-        bool __canShoot = false;
-        if (_shootCountdownTimer <= 0)
-            __canShoot = true;
+        bool __canShoot = (_shootCountdownTimer <= 0) ? true : false;
 
         _shootCountdownTimer -= Time.deltaTime;
+
         if (Input.GetMouseButton(0) && __canShoot)
         {
-            _shootCountdownTimer = 1/rateOfFire;
+            _shootCountdownTimer = 1 / rateOfFire;
             Shoot();
         }
     }
