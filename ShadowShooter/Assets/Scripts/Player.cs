@@ -14,13 +14,23 @@ public class Player : LevelObject
     public float rateOfFire = 1;
 
     private Vector3 __lastMousePosition;
+    private CameraManager _cameraManager;
 
     private float _shootCountdownTimer;
 
     public override void J_Update()
     {
-        base.J_Update();
+        base.J_Update();  
         HandleInputs();
+        _cameraManager.J_Update();
+    }
+
+    public override void J_Start(params object[] p_args)
+    {
+        base.J_Start();
+
+        _cameraManager = onSpawnFreeObject(PoolManager.AssetType.CAMERAMANAGER, transform.position).GetComponent<CameraManager>();
+        _cameraManager.SetPlayerToFollow(transform);
     }
 
     void HandleInputs()
