@@ -10,10 +10,16 @@ public class PoolManager : SystemManager
 
     public enum AssetType
     {
-        PLAYER,
-        BULLET,
-        ENEMY_1,
-        ENEMY_2
+        PLAYER = 0,
+        BULLET = 1,
+        ENEMY_1 = 2,
+        ENEMY_2 = 3,
+
+        CAMERAMANAGER = 9,
+
+        WALL_NORMAL_V = 10,
+        WALL_NORMAL_H = 11,
+        WALL_CORNER = 12
     }
 
     public enum GameArea

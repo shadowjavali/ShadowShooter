@@ -20,7 +20,10 @@ public class Spawner : MonoBehaviour
     {
         if (_empty)
         {
-            _levelObjects.Add(onSpawn(type, transform.position).GetComponent<LevelObject>());
+            LevelObject __levelObject = onSpawn(type, transform.position).GetComponent<LevelObject>();
+            __levelObject.J_Start();
+            _levelObjects.Add(__levelObject);
+
             _empty = false;
             return true;
         }

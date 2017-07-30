@@ -14,6 +14,7 @@ public class Player : LevelObject
     public float rateOfFire = 1;
 
     private Vector3 __lastMousePosition;
+    private CameraManager _cameraManager;
 
     private float _shootCountdownTimer;
 
@@ -21,6 +22,15 @@ public class Player : LevelObject
     {
         base.J_Update();  
         HandleInputs();
+        _cameraManager.J_Update();
+    }
+
+    public override void J_Start()
+    {
+        base.J_Start();
+
+        _cameraManager = onSpawnFreeObject(PoolManager.AssetType.CAMERAMANAGER, transform.position).GetComponent<CameraManager>();
+        _cameraManager.SetPlayerToFollow(transform);
     }
 
     void HandleInputs()
@@ -49,7 +59,7 @@ public class Player : LevelObject
 
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
-            __deltaPosition -= moveSpeed * __lateralAxis;
+            __deltaPosition += moveSpeed * __lateralAxis;
         }
 
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
@@ -59,17 +69,15 @@ public class Player : LevelObject
 
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
-            __deltaPosition += moveSpeed * __lateralAxis;
-        }
-
-       
+            __deltaPosition -= moveSpeed * __lateralAxis;
+        }       
 
         transform.localPosition += new Vector3(__deltaPosition.x/10, __deltaPosition.y/10, 0);
     }
 
     void HandleShootingInputs()
     {
-        Vector3 __mouseWorldPos = Camera.main.WorldToScreenPoint(Vector3.zero);      
+        Vector3 __mouseWorldPos = Camera.main.WorldToScreenPoint(transform.position);      
 
         if (__lastMousePosition != Input.mousePosition)
         {

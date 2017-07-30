@@ -28,10 +28,14 @@ public class Bullet : LevelObject
         if (collision.transform.tag == "Enemy")
         {
             collision.transform.GetComponent<Enemy>().Despawn();
-            if (_timer != null)
-                _timer.Cancel();
-            Despawn();
+           
         }
+
+        Debug.Log(collision.transform.tag);
+
+        if (_timer != null)
+            _timer.Cancel();
+        Despawn();
     }
 
     public override void J_Update()

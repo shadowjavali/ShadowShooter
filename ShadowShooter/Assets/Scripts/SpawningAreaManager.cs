@@ -13,6 +13,27 @@ public class SpawningAreaManager : MonoBehaviour
     public void J_Start()
     {
         InitializeSpawners();
+        SpawnNormalWalls();
+    }
+
+    private void SpawnNormalWalls()
+    {
+        for (int row=-3; row < 4; row++)
+        {
+            if (row != 0)
+                onSpawn(PoolManager.AssetType.WALL_NORMAL_H, new Vector2(row * 1.28f, (-3.5f * 1.28f) - 0.64f), transform);
+            if (row != 0)
+                onSpawn(PoolManager.AssetType.WALL_NORMAL_H, new Vector2(row * 1.28f, (3.5f * 1.28f) + 0.64f), transform).GetComponent<SpriteRenderer>().flipY = true;
+        }
+        for (int col = -3; col < 4; col++)
+        {
+            if (col != 0)
+                onSpawn(PoolManager.AssetType.WALL_NORMAL_V, new Vector2((-3.5f * 1.28f ) - 0.64f, col * 1.28f), transform);
+            if (col != 0)
+                onSpawn(PoolManager.AssetType.WALL_NORMAL_V, new Vector2((3.5f * 1.28f) + 0.64f, col * 1.28f), transform).GetComponent<SpriteRenderer>().flipX = true;
+        }
+
+
     }
 
     private void InitializeSpawners()
