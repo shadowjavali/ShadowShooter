@@ -17,12 +17,15 @@ public class Player : LevelObject
     private CameraManager _cameraManager;
 
     private float _shootCountdownTimer;
+    private float _currentHealth;
 
     public override void J_Update()
     {
         base.J_Update();
         HandleInputs();
+        _currentHealth = maxHealth;
         _cameraManager.J_Update();
+        ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
     }
 
     public override void J_Start(params object[] p_args)
@@ -33,6 +36,11 @@ public class Player : LevelObject
         _cameraManager.SetPlayerToFollow(transform);
     }
 
+    public float GetHealthPercentage()
+    {
+        return _currentHealth / maxHealth;
+    }
+
     void HandleInputs()
     {
         HandleWalkingInputs();
@@ -41,7 +49,6 @@ public class Player : LevelObject
 
     void HandleWalkingInputs()
     {
-
         Vector2 __deltaPosition = Vector2.zero;
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
         { 
@@ -64,10 +71,7 @@ public class Player : LevelObject
         }
         RaycastHit2D hit = Physics2D.Raycast(transform.position, __deltaPosition, Mathf.Infinity, LayerMask.NameToLayer("LevelObject"));
         Debug.DrawRay(transform.position, __deltaPosition, Color.red);
-        if (hit)
-        {
-            Debug.Log("col: " + hit.collider.gameObject.name);
-        }
+
         transform.localPosition += new Vector3(__deltaPosition.x / 10, __deltaPosition.y / 10, 0);
     }
 

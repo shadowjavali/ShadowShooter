@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameplayManager : SystemManager
 {
     [SerializeField] PoolManager _poolManager;
+    [SerializeField] ScreenCanvas _screenCanvas;
 
     private Dictionary<Vector2, SpawningAreaManager> _gameAreaCols = new Dictionary<Vector2, SpawningAreaManager>();
 

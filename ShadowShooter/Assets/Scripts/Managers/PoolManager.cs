@@ -86,11 +86,9 @@ public class PoolManager : SystemManager
                 return false;                
         }
 
-        return true;
-       
-            
-
+        return true;    
     }
+
     private GameObject Spawn(AssetType p_type, Vector2 p_position)
     {
         GameObject __gameObject = Spawn(p_type, p_position, transform.parent);

@@ -5,9 +5,22 @@ using UnityEngine.UI;
 
 public class ScreenCanvas : MonoBehaviour
 {
+    private static ScreenCanvas _instance;
+    public static ScreenCanvas instance
+    {
+        get
+        {
+            return _instance;
+        }
+    }
     public Image arrow;
     public Slider healthBar;
     public Slider baseEnergyBar;
+
+    void Start()
+    {
+        _instance = this;
+    }
 
     void Update()
     {
