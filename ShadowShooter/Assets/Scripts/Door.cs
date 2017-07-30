@@ -44,11 +44,15 @@ public class Door : LevelObject
     {
         if (collision.transform.tag == "Player")
         {
-            _animator.SetTrigger("Open");
-            _collider.enabled = false;
+            OpenDoor();
         }       
     }
 
+    private void OpenDoor()
+    {
+        _animator.SetTrigger("Open");
+        _collider.enabled = false;
+    }
 
     public void AnimationCalledEvent(DoorAnimationEvents p_event)
     {
