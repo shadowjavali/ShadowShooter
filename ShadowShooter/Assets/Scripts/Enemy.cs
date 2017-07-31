@@ -5,7 +5,7 @@ using UnityEngine;
 public class Enemy : LevelObject
 {
     [Header("Enemy Attributes")]
-    public float maxHealth = 10f;
+    public float maxHealth = 5f;
     public float speed = 1f;
     public float attackRate = 1f;
     public float damage = 1;
@@ -18,27 +18,45 @@ public class Enemy : LevelObject
     private bool _canAttack = false;
     private SpawningAreaManager _currentGrid;
     private Vector2 _nextGridAfterDoorPos;
+    private float _currentHealth = 5f;
 
     public enum State
     {
         GOING_TO_DOOR,
         GOING_TO_NEXT_GRID,
         GOING_TO_PLAYER,
-        GOING_TO_GENERATOR
+        GOING_TO_GENERATOR, 
+        GOING_TO_TURRET
     }
 
     [SerializeField] private State _currentState;
+
+    public void TakeDamage()
+    {
+        if (_currentHealth > 0)
+        {
+            _currentHealth--;
+        }
+        else
+        {
+            Despawn();
+        }
+
+    }
 
     public override void J_Start(params object[] p_args)
     {
         _currentGrid = (SpawningAreaManager) p_args[0];
 
-      
+        _currentState = State.GOING_TO_PLAYER;
+
         _playerTarget = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         _generatorTarget = GameObject.FindGameObjectWithTag("Generator").GetComponent<Generator>();
 
         onDespawn -= HandleOnDespawn;
         onDespawn += HandleOnDespawn;
+
+        _currentHealth = maxHealth;
     }
 
     void HandleOnDespawn(PoolManager.AssetType p_type, GameObject p_object)
@@ -169,7 +187,7 @@ public class Enemy : LevelObject
                     Debug.Log("Error");
                 }
 
-                if (Vector3.Distance(transform.position, _target) <= 0.1f)
+                if (Vector3.Distance(transform.position, _target) <= 0.5f)
                 {
                      _currentState = State.GOING_TO_NEXT_GRID;
                 }

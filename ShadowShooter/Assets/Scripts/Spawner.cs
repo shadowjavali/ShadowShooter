@@ -15,7 +15,7 @@ public class Spawner : MonoBehaviour
     private SpawningAreaManager _grid;
 
 
-   [SerializeField] private bool _empty = true;
+   [SerializeField] protected bool _empty = true;
 
     public bool Spawn(int p_queueMax)
     {
@@ -72,7 +72,7 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    public virtual void OnTriggerStay2D(Collider2D collision)
     {      
         _empty = false;
         if (_setEmptyTimer != null)

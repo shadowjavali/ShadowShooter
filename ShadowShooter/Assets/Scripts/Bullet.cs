@@ -31,7 +31,7 @@ public class Bullet : LevelObject
 
             if (collision.transform.tag == "Enemy")
             {
-                collision.transform.GetComponent<Enemy>().Despawn();
+                collision.transform.GetComponent<Enemy>().TakeDamage();
 
             }
 
