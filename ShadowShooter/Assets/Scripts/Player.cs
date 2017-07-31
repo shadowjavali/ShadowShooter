@@ -16,8 +16,20 @@ public class Player : LevelObject
     private Vector3 __lastMousePosition;
     private CameraManager _cameraManager;
 
+    [SerializeField]private SpawningAreaManager _currentGrid;
+
     private float _shootCountdownTimer;
     private float _currentHealth;
+
+    public void SetCurrentGrid(SpawningAreaManager p_grid)
+    {
+        _currentGrid = p_grid;
+    }
+
+    public SpawningAreaManager GetCurrentGrid()
+    {
+        return _currentGrid;
+    }
 
     public override void J_Start(params object[] p_args)
     {
@@ -26,6 +38,7 @@ public class Player : LevelObject
         _cameraManager = onSpawnFreeObject(PoolManager.AssetType.CAMERAMANAGER, transform.position).GetComponent<CameraManager>();
         _cameraManager.SetPlayerToFollow(transform);
         _currentHealth = maxHealth;
+        _currentGrid = (SpawningAreaManager)p_args[0];
         ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
 
     }
@@ -115,7 +128,8 @@ public class Player : LevelObject
         if (_currentHealth <= 0)
         {
             _currentHealth = 0;
-            Debug.Log("Player is dead");
+            if (onDespawn != null)
+                onDespawn(PoolManager.AssetType.PLAYER, gameObject);
         }
         ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
     }

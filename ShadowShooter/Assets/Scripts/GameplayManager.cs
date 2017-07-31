@@ -20,7 +20,6 @@ public class GameplayManager : SystemManager
         _poolManager.onSpawnArea = HandleOnSpawnArea;
         _poolManager.J_Start();
         InitializeArea(SpawningAreaManager.GameAreaType.CENTRAL_AREA, new Vector2(0,0), SpawningAreaManager.DoorPosition.NONE);
-
         
         _poolManager.J_Spawn(_gameAreaCols[new Vector2(0, 0)], PoolManager.AssetType.PLAYER);
 

@@ -18,7 +18,10 @@ public class Door : LevelObject
 
     private SpawningAreaManager.DoorPosition _doorType;
 
+    private SpawningAreaManager _myGrid;
     private Vector2 _gridItOpens;
+
+    private bool _open = false;
 
     public Action<SpawningAreaManager.GameAreaType, Vector2, SpawningAreaManager.DoorPosition> onSpawnArea;
 
@@ -30,6 +33,8 @@ public class Door : LevelObject
     public override void J_Start(params object[] p_args)
     {
         base.J_Start(p_args);
+
+        _open = false;
 
         _spriteRendererFrame.sprite = _doorSpritesFrame[UnityEngine.Random.Range(0, _doorSpritesFrame.Length - 1)];
         _spriteRendererRight.sprite = _doorSpritesRight[UnityEngine.Random.Range(0, _doorSpritesRight.Length - 1)];
@@ -44,26 +49,60 @@ public class Door : LevelObject
         _spriteRendererLeft.flipX = (bool)p_args[0];
         _spriteRendererLeft.flipY = (bool)p_args[1];
 
-        _gridItOpens = (Vector2)p_args[2];
+
+        _myGrid = (SpawningAreaManager)p_args[2];
 
         _doorType = (SpawningAreaManager.DoorPosition)p_args[3];
+
+        switch(_doorType)
+        {
+            case SpawningAreaManager.DoorPosition.LEFT:
+                _gridItOpens = new Vector2(_myGrid.GetGridPos(). x - 1, _myGrid.GetGridPos().y);
+            break;
+            case SpawningAreaManager.DoorPosition.RIGHT:
+                _gridItOpens = new Vector2(_myGrid.GetGridPos().x + 1, _myGrid.GetGridPos().y);
+                break;
+            case SpawningAreaManager.DoorPosition.UP:
+                _gridItOpens = new Vector2(_myGrid.GetGridPos().x, _myGrid.GetGridPos().y +1);
+                break;
+            case SpawningAreaManager.DoorPosition.DOWN:
+                _gridItOpens = new Vector2(_myGrid.GetGridPos().x , _myGrid.GetGridPos().y -1);
+                break;
+
+        }
+
 
         base.J_Start(p_args);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.transform.tag == "Player")
+        if (_open == false)
         {
-            J_OpenDoor();
-            onSpawnArea(SpawningAreaManager.GameAreaType.AREA_TYPE_0, _gridItOpens, _doorType);
-        }       
+            if (collision.transform.tag == "Player")
+            {
+                J_OpenDoor();
+                onSpawnArea(SpawningAreaManager.GameAreaType.AREA_TYPE_0, _gridItOpens, _doorType);
+            }
+        }        
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+       // if (_open == false)
+      //  {
+            if (collision.transform.tag == "Player")
+            {
+                collision.transform.GetComponent<Player>().SetCurrentGrid(_myGrid);
+            }
+        
     }
 
     public void J_OpenDoor()
     {
         _animator.SetTrigger("Open");
-        _collider.enabled = false;      
+        _open = false;
+      //  _collider.enabled = false;      
     }
 
     private void CreateArea()

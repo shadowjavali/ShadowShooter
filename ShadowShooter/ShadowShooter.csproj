@@ -93,12 +93,14 @@
     <Compile Include="Assets\Scripts\General\AO_Tween.cs" />
     <Compile Include="Assets\Scripts\General\AO_TweenManager.cs" />
     <Compile Include="Assets\Scripts\General\RP_FrameTimer.cs" />
+    <Compile Include="Assets\Scripts\Generator.cs" />
     <Compile Include="Assets\Scripts\LevelObject.cs" />
     <Compile Include="Assets\Scripts\Managers\CameraManager.cs" />
     <Compile Include="Assets\Scripts\Managers\MasterManager.cs" />
     <Compile Include="Assets\Scripts\Managers\PoolManager.cs" />
     <Compile Include="Assets\Scripts\Managers\SystemManager.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
+    <Compile Include="Assets\Scripts\ScreenCanvas.cs" />
     <Compile Include="Assets\Scripts\Spawner.cs" />
     <Compile Include="Assets\Scripts\SpawningAreaManager.cs" />
     <Compile Include="Assets\Scripts\Turret.cs" />

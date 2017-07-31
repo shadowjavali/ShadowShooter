@@ -12,6 +12,7 @@ public class Spawner : MonoBehaviour
     public PoolManager.AssetType type;
     public Func<PoolManager.AssetType, Vector2, GameObject> onSpawn;
     RP_FrameTimer _setEmptyTimer = null;
+    private SpawningAreaManager _grid;
 
 
    [SerializeField] private bool _empty = true;
@@ -21,7 +22,18 @@ public class Spawner : MonoBehaviour
         if (_empty)
         {
             LevelObject __levelObject = onSpawn(type, transform.position).GetComponent<LevelObject>();
-            __levelObject.J_Start();
+
+            if ((type == PoolManager.AssetType.ENEMY_1) || (type == PoolManager.AssetType.ENEMY_2) || (type == PoolManager.AssetType.PLAYER))
+            {
+                Debug.Log("Grid no spawner = " + (_grid == null));
+
+                __levelObject.J_Start(new object[] { _grid });
+            }
+            else
+            {
+                __levelObject.J_Start();
+            }         
+
             __levelObject.onDespawn += delegate (PoolManager.AssetType p_type, GameObject p_object)
             {
                 _levelObjects.Remove(p_object.GetComponent<LevelObject>());
@@ -42,8 +54,9 @@ public class Spawner : MonoBehaviour
         return false;
     }
 
-    public virtual void J_Start()
+    public virtual void J_Start(SpawningAreaManager p_grid)
     {
+        _grid = p_grid;
         _empty = true;
     }
 

@@ -25,10 +25,10 @@ public class SpawningAreaManager : MonoBehaviour
 
     private Vector2 _gridPos;
 
-    private Door _doorLeft;
-    private Door _doorRight;
-    private Door _doorUp;
-    private Door _doorDown;
+    public Door _doorLeft;
+    public Door _doorRight;
+    public Door _doorUp;
+    public Door _doorDown;
 
 
     public GameAreaType areaType;
@@ -53,6 +53,11 @@ public class SpawningAreaManager : MonoBehaviour
                 _doorRight.J_OpenDoor();
                 break;
         }
+    }
+
+    public Vector2 GetGridPos()
+    {
+        return _gridPos;
     }
 
     public void J_Start(Vector2 p_gridPos, DoorPosition p_doorToOpen)
@@ -104,11 +109,11 @@ public class SpawningAreaManager : MonoBehaviour
         _doorUp = onSpawn(PoolManager.AssetType.DOOR_H, new Vector2(transform.position.x, transform.position.y) + new Vector2(0, (3.5f * 1.28f) + 0.64f), transform).GetComponent<Door>();
         _doorDown = onSpawn(PoolManager.AssetType.DOOR_H, new Vector2(transform.position.x, transform.position.y) + new Vector2(0, (-3.5f * 1.28f) - 0.64f), transform).GetComponent<Door>();
 
-        _doorLeft.J_Start(new object[] { false, false, new Vector2(_gridPos.x-1, _gridPos.y),DoorPosition.LEFT });
-        _doorRight.J_Start(new object[] { true, false, new Vector2(_gridPos.x + 1, _gridPos.y), DoorPosition.RIGHT });
+        _doorLeft.J_Start(new object[] { false, false, this,DoorPosition.LEFT });
+        _doorRight.J_Start(new object[] { true, false, this, DoorPosition.RIGHT });
 
-        _doorDown.J_Start(new object[] { false, true, new Vector2(_gridPos.x , _gridPos.y-1), DoorPosition.DOWN });
-        _doorUp.J_Start(new object[] { false, false, new Vector2(_gridPos.x , _gridPos.y+1), DoorPosition.UP });
+        _doorDown.J_Start(new object[] { false, true, this, DoorPosition.DOWN });
+        _doorUp.J_Start(new object[] { false, false, this, DoorPosition.UP });
 
         switch (p_doorToOpen)
         {
@@ -134,7 +139,7 @@ public class SpawningAreaManager : MonoBehaviour
         for (int i=0; i< _spawners.Length; i++)
         {
             _spawners[i].onSpawn += Spawn;
-            _spawners[i].J_Start();
+            _spawners[i].J_Start( this);
         }
     }
 
