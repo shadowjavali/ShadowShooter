@@ -25,8 +25,6 @@ public class Spawner : MonoBehaviour
 
             if ((type == PoolManager.AssetType.ENEMY_1) || (type == PoolManager.AssetType.ENEMY_2) || (type == PoolManager.AssetType.PLAYER))
             {
-                Debug.Log("Grid no spawner = " + (_grid == null));
-
                 __levelObject.J_Start(new object[] { _grid });
             }
             else

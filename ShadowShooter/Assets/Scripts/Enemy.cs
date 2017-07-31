@@ -36,6 +36,14 @@ public class Enemy : LevelObject
       
         _playerTarget = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         _generatorTarget = GameObject.FindGameObjectWithTag("Generator").GetComponent<Generator>();
+
+        onDespawn -= HandleOnDespawn;
+        onDespawn += HandleOnDespawn;
+    }
+
+    void HandleOnDespawn(PoolManager.AssetType p_type, GameObject p_object)
+    {
+        ScreenCanvas.instance.enemiesKilled++;
     }
 
     public void SetCurrentGrid(SpawningAreaManager p_grid)
@@ -230,15 +238,24 @@ public class Enemy : LevelObject
     {
         //if (_active)
         //{
-            if (collision.transform.tag == "Player")
+        if (collision.transform.tag == "Player")
+        {
+            if (_canAttack == true)
             {
-                if (_canAttack == true)
-                {
-                    _canAttack = false;
-                    _attackCountdownTimer = attackRate;
-                    collision.gameObject.GetComponent<Player>().InflictDamage(damage);
-                }
+                _canAttack = false;
+                _attackCountdownTimer = attackRate;
+                collision.gameObject.GetComponent<Player>().InflictDamage(damage);
             }
+        }
+        else if (collision.transform.tag == "Generator")
+        {
+            if (_canAttack == true)
+            {
+                _canAttack = false;
+                _attackCountdownTimer = attackRate;
+                collision.gameObject.GetComponent<Generator>().AddEnergy(-damage);
+            }
+        }
        //}
     }
 }

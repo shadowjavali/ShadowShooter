@@ -16,14 +16,25 @@ public class Player : LevelObject
     private Vector3 __lastMousePosition;
     private CameraManager _cameraManager;
 
-    [SerializeField]private SpawningAreaManager _currentGrid;
+    [SerializeField] private SpawningAreaManager _currentGrid;
 
     private float _shootCountdownTimer;
     private float _currentHealth;
 
+    private Dictionary<EnergyType, int> _dictCratesAmount;
+    
+
     public void SetCurrentGrid(SpawningAreaManager p_grid)
     {
         _currentGrid = p_grid;
+    }
+
+    private void InitializeDictCratesAmount()
+    {
+        _dictCratesAmount = new Dictionary<EnergyType, int>();
+        _dictCratesAmount.Add(EnergyType.GREEN, 0);
+        _dictCratesAmount.Add(EnergyType.RED, 0);
+        _dictCratesAmount.Add(EnergyType.PURPLE, 0);
     }
 
     public SpawningAreaManager GetCurrentGrid()
@@ -34,7 +45,7 @@ public class Player : LevelObject
     public override void J_Start(params object[] p_args)
     {
         base.J_Start();
-
+        InitializeDictCratesAmount();
         _cameraManager = onSpawnFreeObject(PoolManager.AssetType.CAMERAMANAGER, transform.position).GetComponent<CameraManager>();
         _cameraManager.SetPlayerToFollow(transform);
         _currentHealth = maxHealth;
@@ -124,7 +135,6 @@ public class Player : LevelObject
     public void InflictDamage(float p_damage)
     {
         _currentHealth -= p_damage;
-        Debug.Log(_currentHealth);
         if (_currentHealth <= 0)
         {
             _currentHealth = 0;
@@ -132,5 +142,25 @@ public class Player : LevelObject
                 onDespawn(PoolManager.AssetType.PLAYER, gameObject);
         }
         ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        //if (_active)
+        //{
+        if (collision.transform.tag == "Generator")
+        {
+            collision.gameObject.GetComponent<Generator>().DeliverCrates(_dictCratesAmount);
+            ScreenCanvas.instance.UpdateCratesText(_dictCratesAmount);
+        }
+
+        if (collision.transform.tag == "EnergyCrate")
+        {
+            _dictCratesAmount[collision.gameObject.GetComponent<EnergyCrate>().type]++;
+
+            Destroy(collision.gameObject);
+            ScreenCanvas.instance.UpdateCratesText(_dictCratesAmount);
+        }
+        //}
     }
 }
