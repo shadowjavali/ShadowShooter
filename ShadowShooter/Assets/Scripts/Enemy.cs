@@ -27,7 +27,7 @@ public class Enemy : LevelObject
         GOING_TO_GENERATOR
     }
 
-    State _currentState;
+    [SerializeField] private State _currentState;
 
     public override void J_Start(params object[] p_args)
     {
@@ -87,7 +87,7 @@ public class Enemy : LevelObject
                 {
                     if (_currentGrid._doorRight.GetDoorState())
                     {
-                        __goingToOpenDoor = true;
+                            __goingToOpenDoor = true;
 
                         _target = new Vector2(_currentGrid._doorRight.transform.position.x - 1.28f, _currentGrid._doorRight.transform.position.y);
                         _nextGridAfterDoorPos = new Vector2(_currentGrid._doorRight.transform.position.x + 1.28f, _currentGrid._doorRight.transform.position.y);
@@ -97,8 +97,9 @@ public class Enemy : LevelObject
                 if ((_currentGrid.GetGridPos().x > 0)  && (__goingToOpenDoor == false))
                 {
                     if (_currentGrid._doorLeft.GetDoorState())
-                    {
-                        __goingToOpenDoor = true;
+                        {
+
+                            __goingToOpenDoor = true;
                         _target = new Vector2(_currentGrid._doorLeft.transform.position.x + 1.28f, _currentGrid._doorLeft.transform.position.y);
                         _nextGridAfterDoorPos = new Vector2(_currentGrid._doorLeft.transform.position.x - 1.28f, _currentGrid._doorLeft.transform.position.y);
                     }
@@ -108,7 +109,8 @@ public class Enemy : LevelObject
                 {
                     if (_currentGrid._doorUp.GetDoorState())
                     {
-                        __goingToOpenDoor = true;
+
+                            __goingToOpenDoor = true;
                         _target = new Vector2(_currentGrid._doorUp.transform.position.x, _currentGrid._doorUp.transform.position.y - 1.28f);
                         _nextGridAfterDoorPos = new Vector2(_currentGrid._doorUp.transform.position.x, _currentGrid._doorUp.transform.position.y + 1.28f);
                     }
@@ -118,6 +120,7 @@ public class Enemy : LevelObject
                 {
                     if (_currentGrid._doorDown.GetDoorState())
                     {
+
                         __goingToOpenDoor = true;
                         _target = new Vector2(_currentGrid._doorDown.transform.position.x, _currentGrid._doorDown.transform.position.y + 1.28f);
                         _nextGridAfterDoorPos = new Vector2(_currentGrid._doorDown.transform.position.x, _currentGrid._doorDown.transform.position.y - 1.28f);
@@ -130,23 +133,32 @@ public class Enemy : LevelObject
                     {
                         _target = new Vector2(_currentGrid._doorDown.transform.position.x, _currentGrid._doorDown.transform.position.y + 1.28f);
                         _nextGridAfterDoorPos = new Vector2(_currentGrid._doorDown.transform.position.x, _currentGrid._doorDown.transform.position.y - 1.28f);
+                        __goingToOpenDoor = true;
                     }
                     else if (_currentGrid._doorUp.GetDoorState())
                     {
                         _target = new Vector2(_currentGrid._doorUp.transform.position.x, _currentGrid._doorUp.transform.position.y - 1.28f);
                         _nextGridAfterDoorPos = new Vector2(_currentGrid._doorUp.transform.position.x, _currentGrid._doorUp.transform.position.y + 1.28f);
-                    }
+                            __goingToOpenDoor = true;
+                        }
                     else if (_currentGrid._doorLeft.GetDoorState())
                     {
                         _target = new Vector2(_currentGrid._doorLeft.transform.position.x + 1.28f, _currentGrid._doorLeft.transform.position.y );
                         _nextGridAfterDoorPos = new Vector2(_currentGrid._doorLeft.transform.position.x - 1.28f, _currentGrid._doorLeft.transform.position.y);
-                    }
+                            __goingToOpenDoor = true;
+                        }
                     else if (_currentGrid._doorRight.GetDoorState())
                     {
                         _target = new Vector2(_currentGrid._doorRight.transform.position.x - 1.28f, _currentGrid._doorRight.transform.position.y);
                         _nextGridAfterDoorPos = new Vector2(_currentGrid._doorRight.transform.position.x + 1.28f, _currentGrid._doorRight.transform.position.y);
-                    }
+                            __goingToOpenDoor = true;
+                        }
+                }
 
+                if (__goingToOpenDoor == false)
+                {
+
+                    Debug.Log("Error");
                 }
 
                 if (Vector3.Distance(transform.position, _target) <= 0.1f)

@@ -112,7 +112,7 @@ public class Door : LevelObject
     public void J_OpenDoor()
     {
         _animator.SetTrigger("Open");
-        _open = false;
+        _open = true;
       //  _collider.enabled = false;      
     }
 
