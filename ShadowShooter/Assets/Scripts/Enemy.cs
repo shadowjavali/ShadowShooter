@@ -81,27 +81,73 @@ public class Enemy : LevelObject
             break;
             case State.GOING_TO_DOOR:
             {
-                if (_currentGrid.GetGridPos().x < 0)
+                 bool __goingToOpenDoor = false;
+
+                if ((_currentGrid.GetGridPos().x < 0) && (__goingToOpenDoor == false))
                 {
-                    _target = new Vector2(_currentGrid._doorRight.transform.position.x - 1.28f, _currentGrid._doorRight.transform.position.y);
-                    _nextGridAfterDoorPos = new Vector2(_currentGrid._doorRight.transform.position.x + 1.28f, _currentGrid._doorRight.transform.position.y);
-                }
-                else if (_currentGrid.GetGridPos().x > 0)
-                {
-                    _target = new Vector2(_currentGrid._doorLeft.transform.position.x + 1.28f, _currentGrid._doorLeft.transform.position.y);
-                    _nextGridAfterDoorPos = new Vector2(_currentGrid._doorLeft.transform.position.x - 1.28f, _currentGrid._doorLeft.transform.position.y);
-                }
-                else if (_currentGrid.GetGridPos().y < 0)
-                {
-                    _target = new Vector2(_currentGrid._doorUp.transform.position.x, _currentGrid._doorUp.transform.position.y - 1.28f);
-                     _nextGridAfterDoorPos = new Vector2(_currentGrid._doorUp.transform.position.x,  _currentGrid._doorUp.transform.position.y + 1.28f);
+                    if (_currentGrid._doorRight.GetDoorState())
+                    {
+                        __goingToOpenDoor = true;
+
+                        _target = new Vector2(_currentGrid._doorRight.transform.position.x - 1.28f, _currentGrid._doorRight.transform.position.y);
+                        _nextGridAfterDoorPos = new Vector2(_currentGrid._doorRight.transform.position.x + 1.28f, _currentGrid._doorRight.transform.position.y);
                     }
-                else if (_currentGrid.GetGridPos().y > 0)
-                {
-                    _target = new Vector2(_currentGrid._doorDown.transform.position.x, _currentGrid._doorDown.transform.position.y + 1.28f);
-                    _nextGridAfterDoorPos = new Vector2(_currentGrid._doorDown.transform.position.x, _currentGrid._doorDown.transform.position.y - 1.28f);
                 }
 
+                if ((_currentGrid.GetGridPos().x > 0)  && (__goingToOpenDoor == false))
+                {
+                    if (_currentGrid._doorLeft.GetDoorState())
+                    {
+                        __goingToOpenDoor = true;
+                        _target = new Vector2(_currentGrid._doorLeft.transform.position.x + 1.28f, _currentGrid._doorLeft.transform.position.y);
+                        _nextGridAfterDoorPos = new Vector2(_currentGrid._doorLeft.transform.position.x - 1.28f, _currentGrid._doorLeft.transform.position.y);
+                    }
+                }
+
+                if ((_currentGrid.GetGridPos().y < 0) && (__goingToOpenDoor == false))
+                {
+                    if (_currentGrid._doorUp.GetDoorState())
+                    {
+                        __goingToOpenDoor = true;
+                        _target = new Vector2(_currentGrid._doorUp.transform.position.x, _currentGrid._doorUp.transform.position.y - 1.28f);
+                        _nextGridAfterDoorPos = new Vector2(_currentGrid._doorUp.transform.position.x, _currentGrid._doorUp.transform.position.y + 1.28f);
+                    }
+                }
+
+                if ((_currentGrid.GetGridPos().y > 0)  && (__goingToOpenDoor == false))
+                {
+                    if (_currentGrid._doorDown.GetDoorState())
+                    {
+                        __goingToOpenDoor = true;
+                        _target = new Vector2(_currentGrid._doorDown.transform.position.x, _currentGrid._doorDown.transform.position.y + 1.28f);
+                        _nextGridAfterDoorPos = new Vector2(_currentGrid._doorDown.transform.position.x, _currentGrid._doorDown.transform.position.y - 1.28f);
+                    }
+                }
+
+                if (__goingToOpenDoor == false)
+                {
+                    if (_currentGrid._doorDown.GetDoorState())
+                    {
+                        _target = new Vector2(_currentGrid._doorDown.transform.position.x, _currentGrid._doorDown.transform.position.y + 1.28f);
+                        _nextGridAfterDoorPos = new Vector2(_currentGrid._doorDown.transform.position.x, _currentGrid._doorDown.transform.position.y - 1.28f);
+                    }
+                    else if (_currentGrid._doorUp.GetDoorState())
+                    {
+                        _target = new Vector2(_currentGrid._doorUp.transform.position.x, _currentGrid._doorUp.transform.position.y - 1.28f);
+                        _nextGridAfterDoorPos = new Vector2(_currentGrid._doorUp.transform.position.x, _currentGrid._doorUp.transform.position.y + 1.28f);
+                    }
+                    else if (_currentGrid._doorLeft.GetDoorState())
+                    {
+                        _target = new Vector2(_currentGrid._doorLeft.transform.position.x + 1.28f, _currentGrid._doorLeft.transform.position.y );
+                        _nextGridAfterDoorPos = new Vector2(_currentGrid._doorLeft.transform.position.x - 1.28f, _currentGrid._doorLeft.transform.position.y);
+                    }
+                    else if (_currentGrid._doorRight.GetDoorState())
+                    {
+                        _target = new Vector2(_currentGrid._doorRight.transform.position.x - 1.28f, _currentGrid._doorRight.transform.position.y);
+                        _nextGridAfterDoorPos = new Vector2(_currentGrid._doorRight.transform.position.x + 1.28f, _currentGrid._doorRight.transform.position.y);
+                    }
+
+                }
 
                 if (Vector3.Distance(transform.position, _target) <= 0.1f)
                 {

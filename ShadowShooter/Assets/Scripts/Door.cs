@@ -30,6 +30,11 @@ public class Door : LevelObject
       
     }
 
+    public bool GetDoorState()
+    {
+        return _open;
+    }
+
     public override void J_Start(params object[] p_args)
     {
         base.J_Start(p_args);
