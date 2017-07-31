@@ -12,18 +12,24 @@ public class GameplayManager : SystemManager
     [SerializeField] private GameObject[] _gameAreaPrefabArray;
     private Dictionary<SpawningAreaManager.GameAreaType, GameObject> _gameAreaPrefabDict;
 
-   
+    private bool _gameOver = false;
 
     public override void J_Start()
-    {
+    { 
         InitializeAreasDictionary();
         _poolManager.onSpawnArea = HandleOnSpawnArea;
         _poolManager.J_Start();
         InitializeArea(SpawningAreaManager.GameAreaType.CENTRAL_AREA, new Vector2(0,0), SpawningAreaManager.DoorPosition.NONE);
         
-        _poolManager.J_Spawn(_gameAreaCols[new Vector2(0, 0)], PoolManager.AssetType.PLAYER);
-
+        Player __player = _poolManager.Spawn(PoolManager.AssetType.PLAYER, new Vector2(0, 0)).GetComponent<Player>();
+        __player.J_Start();
+        __player.onDespawn = HandleOnPlayerFinish;
         // _poolManager.J_Spawn(PoolManager.GameArea.CENTRAL_AREA, PoolManager.AssetType.ENEMY_1, 12);
+    }
+
+    private void HandleOnPlayerFinish(PoolManager.AssetType p_assetType, GameObject p_object)
+    {
+        _gameOver = true;
     }
 
     private void InitializeAreasDictionary()
@@ -78,12 +84,13 @@ public class GameplayManager : SystemManager
 
     public override void J_Update()
     {
-        _poolManager.J_Update();
-
-
-        foreach (SpawningAreaManager __area in _gameAreaCols.Values)
+        if (_gameOver == false)
         {
-            __area.J_Update();            
+            _poolManager.J_Update();
+            foreach (SpawningAreaManager __area in _gameAreaCols.Values)
+            {
+                __area.J_Update();            
+            }        
         }
     }
 }
