@@ -15,10 +15,11 @@ public class Generator : MonoBehaviour
 
 	[SerializeField] private SpriteRenderer[] _spriteRenderer;
 
-    private Dictionary<EnergyType, float> _dictEnergyValue;
-
     private float _currentEnergy;
     private bool _gameOver = false;
+
+    protected bool _playerInside;
+    protected Player _playerScript;
 
     AO_Tween _tween = null;
 	// Use this for initialization
@@ -27,19 +28,27 @@ public class Generator : MonoBehaviour
         _gameOver = false;
 		LightUp ();
         _currentEnergy = _startEnergy;
-        InitializeDictEnergyValue();
-
     }
 
-    private void InitializeDictEnergyValue()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        _dictEnergyValue = new Dictionary<EnergyType, float>();
-        _dictEnergyValue.Add(EnergyType.GREEN, 2.5f);
-        _dictEnergyValue.Add(EnergyType.RED, 5f);
-        _dictEnergyValue.Add(EnergyType.PURPLE, 10f);
+        if (collision.transform.tag == "Player")
+        {
+            _playerInside = true;
+            _playerScript = collision.transform.GetComponent<Player>();
+        }
     }
 
-	private void LightUp()
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.transform.tag == "Player")
+        {
+            _playerInside = false;
+            _playerScript = null;
+        }
+    }
+
+    private void LightUp()
 	{
 		_tween = new AO_FloatTween (0.25f, 0.75f, _durationFade, AO_Tween.TWEEN_MODE.LINEAR, delegate (float p_value) 
 		{
@@ -71,6 +80,15 @@ public class Generator : MonoBehaviour
             return;
         UpdateGeneratorAnimation();
         UpdateEnergyCountdown();
+
+        if (_playerInside)
+        {
+            if (Input.GetKeyDown(KeyCode.E) && _playerScript.HoldingEnergyCrate())
+            {
+                _playerScript.ReleaseCrate();
+                DeliverCrate();
+            }
+        }
     }
 
     void UpdateGeneratorAnimation()
@@ -90,18 +108,11 @@ public class Generator : MonoBehaviour
         return _currentEnergy;
     }
 
-    public void DeliverCrates(Dictionary<EnergyType, int> p_dictCrates)
-    {
-        if (_dictEnergyValue == null)
-            return;
-        foreach (KeyValuePair<EnergyType, int> k in p_dictCrates)
-        {
-            _currentEnergy += k.Value * _dictEnergyValue[k.Key];
-        }
-
-        p_dictCrates[EnergyType.GREEN] = 0;
-        p_dictCrates[EnergyType.RED] = 0;
-        p_dictCrates[EnergyType.PURPLE] = 0;
+    public void DeliverCrate()
+    {       
+        _currentEnergy += 30;
+        if (_currentEnergy > 100)
+            _currentEnergy = 100;
     }
 
     public void AddEnergy(float p_amount)

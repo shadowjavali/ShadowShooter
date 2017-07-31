@@ -2,13 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnergyCrate : Crate
+public class TurretCrate : Crate
 {
-   
 
-  
 
-   
 }
-
-            

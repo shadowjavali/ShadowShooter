@@ -63,6 +63,16 @@ public class Turret : LevelObject
 
         switch(_currentState)
         {
+            case TurretStates.RELOADING:
+            {
+                if (_targets.Count > 0)
+                {
+                    float __angleRad = Mathf.Atan2(_targets[0].transform.position.y - transform.position.y, _targets[0].transform.position.x - transform.position.x);
+                    float __angleDeg = (180 / Mathf.PI) * __angleRad;
+                    transform.eulerAngles = new Vector3(0f, 0f, __angleDeg + 180);
+                }              
+            }
+            break;
             case TurretStates.IDLE:
             {
                 if (_targets.Count > 0)

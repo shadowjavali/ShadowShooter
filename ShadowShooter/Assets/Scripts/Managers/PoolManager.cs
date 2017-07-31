@@ -15,6 +15,8 @@ public class PoolManager : SystemManager
         ENEMY_1 = 2,
         ENEMY_2 = 3,
         TURRET = 6,
+        ENERGY_CRATE = 7,
+        TURRET_CRATE = 8,
         CAMERAMANAGER = 9,
         WALL_NORMAL_V = 10,
         WALL_NORMAL_H = 11,
@@ -93,7 +95,6 @@ public class PoolManager : SystemManager
     {
         GameObject __gameObject = Spawn(p_type, p_position, transform.parent);
         _childObjects.Add(__gameObject.GetComponent<LevelObject>());
-
 
         __gameObject.GetComponent<LevelObject>().onDespawn += delegate (AssetType p_assetType, GameObject p_gameObject)
         {

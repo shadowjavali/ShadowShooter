@@ -5,15 +5,38 @@ using UnityEngine;
 public class TurretArea : Spawner
 {
     private bool _playerInside;
+    protected Player _playerScript;
 
     private Turret _turret = null;
+
+    public override void J_Start(SpawningAreaManager p_grid)
+    {
+        base.J_Start(p_grid);
+        _empty = true;
+        Debug.Log("Yeah");
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.transform.tag == "Player")
         {
             _playerInside = true;
+            _playerScript = collision.transform.GetComponent<Player>();
         }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.transform.tag == "Player")
+        {
+            _playerInside = false;
+            _playerScript = null;
+        }
+    }
+
+    public override void OnTriggerStay2D(Collider2D collision)
+    {
+       
     }
 
     public override void J_Update()
@@ -26,9 +49,14 @@ public class TurretArea : Spawner
         {
             if (Input.GetKeyDown(KeyCode.E))
             {
-                if (_empty)
+                Debug.Log("Click " + _empty + "/" + _playerInside + "/" + _playerScript.HoldingTurretCrate());
+                if (_empty && _playerInside && _playerScript.HoldingTurretCrate())
                 {
-                    _turret = onSpawn(type, transform.position).GetComponent<Turret>();                               
+                    Debug.Log("Turret");
+
+                    _playerScript.ReleaseCrate();
+
+                    _turret = onSpawn(type, transform.position).GetComponent<Turret>();
                     _turret.J_Start();
 
                     _turret.onDespawn += delegate (PoolManager.AssetType p_type, GameObject p_object)
@@ -37,15 +65,10 @@ public class TurretArea : Spawner
                     };
 
                     _empty = false;
-                   
-                }
+                }                  
                 
             }
         }
     }
 
-    public override void OnTriggerStay2D(Collider2D collision)
-    {
-       
-    }
 }

@@ -21,20 +21,45 @@ public class Player : LevelObject
     private float _shootCountdownTimer;
     private float _currentHealth;
 
-    private Dictionary<EnergyType, int> _dictCratesAmount;
-    
+    private Crate _crateHolding = null;
+
+    public bool HoldingEnergyCrate()
+    {
+        if (_crateHolding is EnergyCrate)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public bool HoldingTurretCrate()
+    {
+        if (_crateHolding is TurretCrate)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void ReleaseCrate()
+    {
+        _crateHolding = null;
+    }
+
+    public bool LoadCrate(Crate p_crate)
+    {
+        if (_crateHolding == null)
+        {
+            _crateHolding = p_crate;
+            return true;
+        }
+
+        return false;
+    }
 
     public void SetCurrentGrid(SpawningAreaManager p_grid)
     {
         _currentGrid = p_grid;
-    }
-
-    private void InitializeDictCratesAmount()
-    {
-        _dictCratesAmount = new Dictionary<EnergyType, int>();
-        _dictCratesAmount.Add(EnergyType.GREEN, 0);
-        _dictCratesAmount.Add(EnergyType.RED, 0);
-        _dictCratesAmount.Add(EnergyType.PURPLE, 0);
     }
 
     public SpawningAreaManager GetCurrentGrid()
@@ -45,7 +70,6 @@ public class Player : LevelObject
     public override void J_Start(params object[] p_args)
     {
         base.J_Start();
-        InitializeDictCratesAmount();
         _cameraManager = onSpawnFreeObject(PoolManager.AssetType.CAMERAMANAGER, transform.position).GetComponent<CameraManager>();
         _cameraManager.SetPlayerToFollow(transform);
         _currentHealth = maxHealth;
@@ -146,6 +170,7 @@ public class Player : LevelObject
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        /*
         //if (_active)
         //{
         if (collision.transform.tag == "Generator")
@@ -162,5 +187,6 @@ public class Player : LevelObject
             ScreenCanvas.instance.UpdateCratesText(_dictCratesAmount);
         }
         //}
+        */
     }
 }

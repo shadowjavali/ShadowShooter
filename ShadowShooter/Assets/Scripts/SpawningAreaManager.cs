@@ -33,6 +33,7 @@ public class SpawningAreaManager : MonoBehaviour
 
     public GameAreaType areaType;
     public Func<PoolManager.AssetType, Vector2, Transform, GameObject> onSpawn;
+    public Func<PoolManager.AssetType, Vector2, Transform, GameObject> onSpawnMultiple;
 
     [SerializeField] private Spawner[] _spawners;
 
@@ -67,6 +68,7 @@ public class SpawningAreaManager : MonoBehaviour
         SpawnNormalWalls();
         SpawnCornerWalls();
         SpawnDoors(p_doorToOpen);
+
     }
 
     private void SpawnCornerWalls()

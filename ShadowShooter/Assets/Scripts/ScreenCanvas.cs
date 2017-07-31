@@ -76,7 +76,7 @@ public class ScreenCanvas : MonoBehaviour
             timeText.text = "Play Time: " + _playTime + "s";
         }
     }
-
+    /*
     public void UpdateCratesText(Dictionary<EnergyType, int> p_dictCratesAmount)
     {
         if (p_dictCratesAmount.ContainsKey(EnergyType.GREEN))
@@ -108,7 +108,7 @@ public class ScreenCanvas : MonoBehaviour
         {
             purpleText.text = "0";
         }
-    }
+    }*/
 
 
     void UpdateArrowRotation()

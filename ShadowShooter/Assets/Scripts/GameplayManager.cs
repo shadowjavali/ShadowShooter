@@ -21,10 +21,27 @@ public class GameplayManager : SystemManager
         _poolManager.J_Start();
         InitializeArea(SpawningAreaManager.GameAreaType.CENTRAL_AREA, new Vector2(0,0), SpawningAreaManager.DoorPosition.NONE);
         
-        Player __player = _poolManager.Spawn(PoolManager.AssetType.PLAYER, new Vector2(0, 0)).GetComponent<Player>();
+        Player __player = _poolManager.Spawn(PoolManager.AssetType.PLAYER, new Vector2(0, 2)).GetComponent<Player>();
         __player.J_Start( new object[] { _gameAreaCols[new Vector2(0, 0)] } );
         __player.onDespawn = HandleOnPlayerFinish;
+
+        TimedSpawnEnemy();
+
         // _poolManager.J_Spawn(PoolManager.GameArea.CENTRAL_AREA, PoolManager.AssetType.ENEMY_1, 12);
+    }
+
+    private void TimedSpawnEnemy()
+    {
+        AO_Timer __timer = new AO_Timer(20, delegate
+         {
+             foreach (SpawningAreaManager __area in _gameAreaCols.Values)
+             {
+                 //first enemies Spawned
+                 int _enemy1Quantity = UnityEngine.Random.Range(1, 5);
+                 _poolManager.J_Spawn(__area, PoolManager.AssetType.ENEMY_1, _enemy1Quantity);
+             }
+             TimedSpawnEnemy();
+         });
     }
 
     private void HandleOnPlayerFinish(PoolManager.AssetType p_assetType, GameObject p_object)
@@ -75,8 +92,24 @@ public class GameplayManager : SystemManager
 
         SpawningAreaManager __newArea = Instantiate(_gameAreaPrefabDict[p_areaType], p_gridPos * 11.52f, Quaternion.identity, transform).GetComponent<SpawningAreaManager>();
         
-        __newArea.onSpawn = _poolManager.JFunc_Spawn;
+        __newArea.onSpawn = _poolManager.JFunc_Spawn;       
         __newArea.J_Start(p_gridPos, __doorToOpen);
+
+        //first enemies Spawned
+        int _enemy1Quantity = UnityEngine.Random.Range(1, 5);
+        _poolManager.J_Spawn(__newArea, PoolManager.AssetType.ENEMY_1, _enemy1Quantity);
+
+        int _chanceToDropEnergyBox = UnityEngine.Random.Range(1, 3);
+        if (_chanceToDropEnergyBox == 1)
+        {
+            _poolManager.J_Spawn(__newArea, PoolManager.AssetType.ENERGY_CRATE, 1);
+        }
+
+        int _chanceToDropTurretBox = UnityEngine.Random.Range(1, 5);
+        if (_chanceToDropTurretBox == 1)
+        {
+            _poolManager.J_Spawn(__newArea, PoolManager.AssetType.TURRET_CRATE, 1);
+        }
 
         _gameAreaCols.Add(p_gridPos, __newArea);
 
