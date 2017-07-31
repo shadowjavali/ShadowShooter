@@ -22,7 +22,7 @@ public class GameplayManager : SystemManager
         InitializeArea(SpawningAreaManager.GameAreaType.CENTRAL_AREA, new Vector2(0,0), SpawningAreaManager.DoorPosition.NONE);
         
         Player __player = _poolManager.Spawn(PoolManager.AssetType.PLAYER, new Vector2(0, 0)).GetComponent<Player>();
-        __player.J_Start();
+        __player.J_Start( new object[] { _gameAreaCols[new Vector2(0, 0)] } );
         __player.onDespawn = HandleOnPlayerFinish;
         // _poolManager.J_Spawn(PoolManager.GameArea.CENTRAL_AREA, PoolManager.AssetType.ENEMY_1, 12);
     }

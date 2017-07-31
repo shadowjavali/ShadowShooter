@@ -89,7 +89,7 @@ public class PoolManager : SystemManager
         return true;    
     }
 
-    private GameObject Spawn(AssetType p_type, Vector2 p_position)
+    public GameObject Spawn(AssetType p_type, Vector2 p_position)
     {
         GameObject __gameObject = Spawn(p_type, p_position, transform.parent);
         _childObjects.Add(__gameObject.GetComponent<LevelObject>());
@@ -105,7 +105,7 @@ public class PoolManager : SystemManager
 
     }
 
-    private GameObject Spawn(AssetType p_type, Vector2 p_position, Transform p_parent)
+    public GameObject Spawn(AssetType p_type, Vector2 p_position, Transform p_parent)
     {
         GameObject __objectToRespawn = null;
 

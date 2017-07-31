@@ -84,18 +84,24 @@ public class Door : LevelObject
                 J_OpenDoor();
                 onSpawnArea(SpawningAreaManager.GameAreaType.AREA_TYPE_0, _gridItOpens, _doorType);
             }
-        }        
+        }
+        if (collision.transform.tag == "Player")
+        {
+            collision.transform.GetComponent<Player>().SetCurrentGrid(_myGrid);
+        }
+        else
+        if (collision.transform.tag == "Enemy")
+        {
+            collision.transform.GetComponent<Enemy>().SetCurrentGrid(_myGrid);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
        // if (_open == false)
       //  {
-            if (collision.transform.tag == "Player")
-            {
-                collision.transform.GetComponent<Player>().SetCurrentGrid(_myGrid);
-            }
-        
+       
+
     }
 
     public void J_OpenDoor()
