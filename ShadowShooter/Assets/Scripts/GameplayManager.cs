@@ -32,13 +32,18 @@ public class GameplayManager : SystemManager
 
     private void TimedSpawnEnemy()
     {
-        AO_Timer __timer = new AO_Timer(20, delegate
+        AO_Timer __timer = new AO_Timer(30, delegate
          {
              foreach (SpawningAreaManager __area in _gameAreaCols.Values)
              {
-                 //first enemies Spawned
-                 int _enemy1Quantity = UnityEngine.Random.Range(1, 5);
+                
+                 int _enemy1Quantity = UnityEngine.Random.Range(1, 3);
                  _poolManager.J_Spawn(__area, PoolManager.AssetType.ENEMY_1, _enemy1Quantity);
+
+                 int _enemy2Quantity = UnityEngine.Random.Range(0, 10);
+                 _enemy2Quantity -= 8;
+                 if (_enemy2Quantity > 0)
+                     _poolManager.J_Spawn(__area, PoolManager.AssetType.ENEMY_2, _enemy1Quantity);
              }
              TimedSpawnEnemy();
          });
@@ -96,23 +101,27 @@ public class GameplayManager : SystemManager
         __newArea.J_Start(p_gridPos, __doorToOpen);
 
         //first enemies Spawned
-        int _enemy1Quantity = UnityEngine.Random.Range(1, 5);
+        int _enemy1Quantity = UnityEngine.Random.Range(1, 3);
         _poolManager.J_Spawn(__newArea, PoolManager.AssetType.ENEMY_1, _enemy1Quantity);
 
-        int _chanceToDropEnergyBox = UnityEngine.Random.Range(1, 3);
-        if (_chanceToDropEnergyBox == 1)
+        int _enemy2Quantity = UnityEngine.Random.Range(0, 10);
+        _enemy2Quantity -= 8;
+        if (_enemy2Quantity > 0)
+            _poolManager.J_Spawn(__newArea, PoolManager.AssetType.ENEMY_2, _enemy1Quantity);
+
+        int _chanceToDropEnergyBox = UnityEngine.Random.Range(1, 4);
+        if (_chanceToDropEnergyBox <= 2)
         {
             _poolManager.J_Spawn(__newArea, PoolManager.AssetType.ENERGY_CRATE, 1);
         }
 
-        int _chanceToDropTurretBox = UnityEngine.Random.Range(1, 5);
+        int _chanceToDropTurretBox = UnityEngine.Random.Range(1, 6);
         if (_chanceToDropTurretBox == 1)
         {
             _poolManager.J_Spawn(__newArea, PoolManager.AssetType.TURRET_CRATE, 1);
         }
 
         _gameAreaCols.Add(p_gridPos, __newArea);
-
     }
 
     public override void J_Update()

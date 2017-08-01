@@ -42,8 +42,6 @@ public class Turret : LevelObject
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.transform.tag);
-
         if (collision.transform.tag == "Enemy")
         {
             _targets.Add(collision.transform);

@@ -16,6 +16,10 @@ public class Player : LevelObject
     private Vector3 __lastMousePosition;
     private CameraManager _cameraManager;
 
+    bool _holdingFirstCrate = false;
+
+    TurretCrate _startingCrate = new TurretCrate();
+
     [SerializeField] private SpawningAreaManager _currentGrid;
 
     private float _shootCountdownTimer;
@@ -46,10 +50,14 @@ public class Player : LevelObject
         _crateHolding = null;
         ScreenCanvas.instance.SetCurrentCrate(ScreenCanvas.CrateType.NONE);
         ScreenCanvas.instance.UpdateCratesText();
+        _holdingFirstCrate = false;
     }
 
     public bool LoadCrate(Crate p_crate)
     {
+        if (_holdingFirstCrate)
+            return false;
+
         if (_crateHolding == null)
         {
             _crateHolding = p_crate;
@@ -84,7 +92,8 @@ public class Player : LevelObject
         _currentHealth = maxHealth;
         _currentGrid = (SpawningAreaManager)p_args[0];
         ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
-
+        LoadCrate(_startingCrate);
+        _holdingFirstCrate = true;
     }
 
     public override void J_Update()
@@ -169,10 +178,8 @@ public class Player : LevelObject
     {
         _currentHealth -= p_damage;
         if (_currentHealth <= 0)
-        {
-            _currentHealth = 0;
-            if (onDespawn != null)
-                onDespawn(PoolManager.AssetType.PLAYER, gameObject);
+        {               
+            ScreenCanvas.instance.ChangeScreen(1);    
         }
         ScreenCanvas.instance.SetHealthBarPercentage(GetHealthPercentage());
     }

@@ -136,5 +136,8 @@ public class ScreenCanvas : MonoBehaviour
     public void SetCurrentCrate(CrateType p_crate)
     {
         _currentCrate = p_crate;
+
+        if (_currentCrate != CrateType.NONE)
+            createdFounded++;
     }
 }
