@@ -112,7 +112,7 @@ public class Generator : MonoBehaviour
     {       
         _currentEnergy += 30;
         if (_currentEnergy > 100)
-            _currentEnergy = 100;
+            _currentEnergy = 100;      
     }
 
     public void AddEnergy(float p_amount)

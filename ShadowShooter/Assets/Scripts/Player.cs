@@ -44,6 +44,8 @@ public class Player : LevelObject
     public void ReleaseCrate()
     {
         _crateHolding = null;
+        ScreenCanvas.instance.SetCurrentCrate(ScreenCanvas.CrateType.NONE);
+        ScreenCanvas.instance.UpdateCratesText();
     }
 
     public bool LoadCrate(Crate p_crate)
@@ -51,6 +53,13 @@ public class Player : LevelObject
         if (_crateHolding == null)
         {
             _crateHolding = p_crate;
+
+            if (_crateHolding is TurretCrate)          
+                ScreenCanvas.instance.SetCurrentCrate(ScreenCanvas.CrateType.TURRET);
+            else if (_crateHolding is EnergyCrate)
+                ScreenCanvas.instance.SetCurrentCrate(ScreenCanvas.CrateType.ENERGY);
+
+            ScreenCanvas.instance.UpdateCratesText();
             return true;
         }
 

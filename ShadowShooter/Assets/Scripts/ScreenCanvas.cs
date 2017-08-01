@@ -32,13 +32,19 @@ public class ScreenCanvas : MonoBehaviour
     public Text cratesText;
     public Text timeText;
 
-    private int purpleCratesCount;
-    private int redCratesCount;
-    private int greenCratesCount;
+    public Image crateImage;
 
-    public Text purpleText;
-    public Text redText;
-    public Text greenText;
+    public Sprite _crateEmpty;
+    public Sprite _crateTurret;
+    public Sprite _crateEnergy;
+
+    public enum CrateType
+    {
+        ENERGY,
+        TURRET,
+        NONE
+    }
+    private CrateType _currentCrate;
 
     void Start()
     {
@@ -76,39 +82,22 @@ public class ScreenCanvas : MonoBehaviour
             timeText.text = "Play Time: " + _playTime + "s";
         }
     }
-    /*
-    public void UpdateCratesText(Dictionary<EnergyType, int> p_dictCratesAmount)
+
+    public void UpdateCratesText()
     {
-        if (p_dictCratesAmount.ContainsKey(EnergyType.GREEN))
+        switch(_currentCrate)
         {
-            greenCratesCount = p_dictCratesAmount[EnergyType.GREEN];
-            greenText.text = p_dictCratesAmount[EnergyType.GREEN].ToString();
+            case CrateType.NONE:
+                crateImage.sprite = _crateEmpty;
+            break;
+            case CrateType.ENERGY:
+                crateImage.sprite = _crateEnergy;
+                break;
+            case CrateType.TURRET:
+                crateImage.sprite = _crateTurret;
+                break;
         }
-        else
-        {
-            greenText.text = "0";
-        }
-
-        if (p_dictCratesAmount.ContainsKey(EnergyType.RED))
-        {
-            redCratesCount = p_dictCratesAmount[EnergyType.RED];
-            redText.text = p_dictCratesAmount[EnergyType.RED].ToString();
-        }
-        else
-        {
-            redText.text = "0";
-        }
-
-        if (p_dictCratesAmount.ContainsKey(EnergyType.PURPLE))
-        {
-            purpleCratesCount = p_dictCratesAmount[EnergyType.PURPLE];
-            purpleText.text = p_dictCratesAmount[EnergyType.PURPLE].ToString();
-        }
-        else
-        {
-            purpleText.text = "0";
-        }
-    }*/
+    }
 
 
     void UpdateArrowRotation()
@@ -116,7 +105,7 @@ public class ScreenCanvas : MonoBehaviour
         if (Camera.main == null)
             return;
 
-        if (purpleCratesCount > 0 || greenCratesCount > 0 || redCratesCount > 0)
+        if (_currentCrate != CrateType.NONE)
         {
             arrow.gameObject.SetActive(true);
         }
@@ -141,6 +130,11 @@ public class ScreenCanvas : MonoBehaviour
 
     public void SetCurrentEnergy(float p_value)
     {
-        energyText.text = p_value.ToString();
+        energyText.text = (Mathf.Round(p_value*100)/100). ToString() + "%";
+    }
+
+    public void SetCurrentCrate(CrateType p_crate)
+    {
+        _currentCrate = p_crate;
     }
 }
